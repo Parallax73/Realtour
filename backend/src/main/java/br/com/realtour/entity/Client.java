@@ -27,6 +27,6 @@ public class Client {
     public Client(@NotNull RegisterClientDTO dto){
         this.username = dto.username();
         this.password = dto.password();
-        this.role = dto.role();
+        this.role = UserRoles.CLIENT;
     }
 }
