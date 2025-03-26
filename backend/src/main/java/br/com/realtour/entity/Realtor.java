@@ -2,12 +2,13 @@ package br.com.realtour.entity;
 
 import br.com.realtour.util.RegisterRealtorDTO;
 import br.com.realtour.util.UserRoles;
-import jakarta.persistence.Id;
+
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @AllArgsConstructor
