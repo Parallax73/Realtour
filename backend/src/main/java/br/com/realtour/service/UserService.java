@@ -13,27 +13,32 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
     @Autowired
-    ClientRepository ClientRepository;
+    ClientRepository clientRepository;
 
     @Autowired
-    RealtorRepository RealtorRepository;
+    RealtorRepository realtorRepository;
 
     public Client createClient(RegisterClientDTO dto) {
         try {
             Client client = new Client(dto);
-            return ClientRepository.save(client);
+            return clientRepository.save(client);
         } catch (RuntimeException e) {
             throw new RuntimeException("Client already exists with this email");
         }
     }
 
     public Realtor createRealtor(RegisterRealtorDTO dto){
-        try {
-            Realtor client = new Realtor(dto);
-            return RealtorRepository.save(client);
-        } catch (RuntimeException e) {
-            throw new RuntimeException("Client already exists with this email");
-        }
-    }
 
+        //Fazer validação de estado e número (criar interface com as federações e fazer a validação).
+
+
+            if (dto.creci().length()<9){
+                throw new IllegalArgumentException("Creci is invalid, check the number or state.");
+            }
+            if (realtorRepository.existsByUsername(dto.username())){
+                throw new IllegalArgumentException("Username already in use.");
+            }
+            Realtor client = new Realtor(dto);
+            return realtorRepository.save(client);
+        }
 }
