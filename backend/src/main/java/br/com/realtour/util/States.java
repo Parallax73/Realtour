@@ -3,7 +3,7 @@ package br.com.realtour.util;
 import lombok.Getter;
 
 @Getter
-public enum Estados {
+public enum States {
     AC("AC"),
     AL("AL"),
     AP("AP"),
@@ -34,12 +34,12 @@ public enum Estados {
 
     private final String code;
 
-    Estados(String code) {
+    States(String code) {
         this.code = code;
     }
 
     public static boolean isValidState(String code) {
-        for (Estados state : values()) {
+        for (States state : values()) {
             if (state.getCode().equals(code)) {
                 return true;
             }
