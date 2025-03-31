@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,10 +25,11 @@ public class Client {
     private UserRoles role;
     private List<Unit> savedUnits;
 
+    BCryptPasswordEncoder encoder;
 
     public Client(@NotNull RegisterClientDTO dto){
         this.username = dto.username();
-        this.password = dto.password();
+        this.password = encoder.encode(dto.password());
         this.role = UserRoles.CLIENT;
         this.savedUnits = new ArrayList<>();
     }
