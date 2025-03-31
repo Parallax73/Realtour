@@ -2,13 +2,17 @@ package br.com.realtour.service;
 
 import br.com.realtour.entity.Client;
 import br.com.realtour.entity.Realtor;
+import br.com.realtour.entity.Unit;
 import br.com.realtour.repository.ClientRepository;
 import br.com.realtour.repository.RealtorRepository;
-import br.com.realtour.util.Estados;
+import br.com.realtour.repository.UnitRepository;
+import br.com.realtour.util.States;
 import br.com.realtour.util.RegisterClientDTO;
 import br.com.realtour.util.RegisterRealtorDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class UserService {
@@ -18,6 +22,13 @@ public class UserService {
 
     @Autowired
     RealtorRepository realtorRepository;
+
+    @Autowired
+    UnitRepository unitRepository;
+
+    @Autowired
+    JwtService jwtService;
+
 
     public Client createClient(RegisterClientDTO dto) {
 
@@ -37,12 +48,22 @@ public class UserService {
             if (realtorRepository.existsByUsername(dto.username())){
                 throw new IllegalArgumentException("Username already in use.");
             }
+
             Realtor client = new Realtor(dto);
             return realtorRepository.save(client);
         }
-
-        private boolean validateCreci(String creci){
-           return Estados.isValidState(creci.substring(0,2).toUpperCase()) && !realtorRepository.existsByCreci(creci);
+    private boolean validateCreci(String creci){
+        return States.isValidState(creci.substring(0,2).toUpperCase()) && !realtorRepository.existsByCreci(creci);
         }
+
+
+    public List<Unit> getUnits(String username) {
+        return realtorRepository.findByUsername(username).getOwnUnits();
+    }
+
+    public void saveUnits(){
+        
+    }
+
 
 }
