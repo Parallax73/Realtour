@@ -7,6 +7,9 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Document
@@ -19,11 +22,13 @@ public class Client {
     private String username;
     private String password;
     private UserRoles role;
+    private List<Unit> savedUnits;
 
 
     public Client(@NotNull RegisterClientDTO dto){
         this.username = dto.username();
         this.password = dto.password();
         this.role = UserRoles.CLIENT;
+        this.savedUnits = new ArrayList<>();
     }
 }
