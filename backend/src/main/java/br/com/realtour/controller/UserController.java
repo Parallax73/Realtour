@@ -1,8 +1,7 @@
 package br.com.realtour.controller;
 
 
-import br.com.realtour.entity.Client;
-import br.com.realtour.entity.Realtor;
+
 import br.com.realtour.service.UserService;
 import br.com.realtour.util.RegisterClientDTO;
 import br.com.realtour.util.RegisterRealtorDTO;
@@ -26,7 +25,7 @@ public class UserController {
     @PostMapping("create-client")
     public ResponseEntity<?> registerClient(@RequestBody RegisterClientDTO dto){
         try {
-            Client client = this.service.createClient(dto);
+            this.service.createClient(dto);
             return ResponseEntity.status(HttpStatus.CREATED).body("Created with success");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
@@ -38,7 +37,7 @@ public class UserController {
     @PostMapping("register-realtor")
     public ResponseEntity<?> registerRealtor(@RequestBody RegisterRealtorDTO dto) {
         try {
-            Realtor realtor = this.service.createRealtor(dto);
+            this.service.createRealtor(dto);
             return ResponseEntity.status(HttpStatus.CREATED).body("Created with success");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
