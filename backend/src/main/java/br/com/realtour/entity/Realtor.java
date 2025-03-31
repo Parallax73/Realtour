@@ -11,6 +11,9 @@ import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Document
@@ -24,12 +27,14 @@ public class Realtor {
     private String password;
     private String creci;
     private UserRoles role;
+    private List<Unit> ownUnits;
 
     public Realtor(@NotNull RegisterRealtorDTO dto){
         this.username = dto.username();
         this.password = dto.password();
         this.creci = dto.creci();
         this.role = UserRoles.REALTOR;
+        this.ownUnits = new ArrayList<>();
     }
 
 }
