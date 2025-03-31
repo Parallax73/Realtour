@@ -10,4 +10,5 @@ public interface RealtorRepository extends MongoRepository<Realtor, String> {
 
     boolean existsByCreci(String creci);
 
+    Realtor findByUsername(String username);
 }
