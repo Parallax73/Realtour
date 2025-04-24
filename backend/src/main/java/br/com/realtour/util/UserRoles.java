@@ -1,7 +1,6 @@
 package br.com.realtour.util;
 
 public enum UserRoles {
-    CLIENT,
-    REALTOR,
-    ADMIN
+    ROLE_USER,
+    ROLE_ADMIN
 }
