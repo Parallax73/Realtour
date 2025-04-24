@@ -2,19 +2,21 @@ package br.com.realtour.service;
 
 import br.com.realtour.entity.Client;
 import br.com.realtour.entity.Realtor;
-import br.com.realtour.entity.Unit;
 import br.com.realtour.repository.ClientRepository;
 import br.com.realtour.repository.RealtorRepository;
-import br.com.realtour.repository.UnitRepository;
+import br.com.realtour.util.LoginDTO;
 import br.com.realtour.util.States;
 import br.com.realtour.util.RegisterClientDTO;
 import br.com.realtour.util.RegisterRealtorDTO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
+@Slf4j
 public class UserService {
 
     @Autowired
@@ -24,10 +26,13 @@ public class UserService {
     RealtorRepository realtorRepository;
 
     @Autowired
-    UnitRepository unitRepository;
+    JwtService jwtService;
+
 
     @Autowired
-    JwtService jwtService;
+    private PasswordEncoder encoder;
+
+
 
 
     public Client createClient(RegisterClientDTO dto) {
@@ -36,6 +41,7 @@ public class UserService {
             throw new IllegalArgumentException("Username already in use");
         }
         Client client = new Client(dto);
+        client.setPassword(encoder.encode(dto.password()));
         return clientRepository.save(client);
 
     }
@@ -49,21 +55,29 @@ public class UserService {
                 throw new IllegalArgumentException("Username already in use.");
             }
 
-            Realtor client = new Realtor(dto);
-            return realtorRepository.save(client);
+            Realtor realtor = new Realtor(dto);
+            realtor.setPassword(encoder.encode(dto.password()));
+            return realtorRepository.save(realtor);
         }
+
+
+    public String loginRealtor(LoginDTO dto){
+
+        try{
+           if (realtorRepository.findByUsername(dto.username()).isPresent()){
+               Realtor realtor = realtorRepository.findByUsername(dto.username()).get();
+               if (encoder.matches(dto.password(), realtor.getPassword())){
+                   return jwtService.generateToken(realtor.getUsername());
+               }
+           }
+        } catch (UsernameNotFoundException e){
+            throw new UsernameNotFoundException("Username not found");
+        }
+        return null;
+    }
+
+
     private boolean validateCreci(String creci){
         return States.isValidState(creci.substring(0,2).toUpperCase()) && !realtorRepository.existsByCreci(creci);
         }
-
-
-    public List<Unit> getUnits(String username) {
-        return realtorRepository.findByUsername(username).getOwnUnits();
-    }
-
-    public void saveUnits(){
-        
-    }
-
-
 }
