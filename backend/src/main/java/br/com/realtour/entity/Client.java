@@ -6,10 +6,12 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+/*import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;*/
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -22,15 +24,14 @@ public class Client {
     private String id;
     private String username;
     private String password;
-    private UserRoles role;
+    private Set<Role> roles = new HashSet<>();
     private List<Unit> savedUnits;
 
-    BCryptPasswordEncoder encoder;
+   /* BCryptPasswordEncoder encoder;*/
 
     public Client(@NotNull RegisterClientDTO dto){
         this.username = dto.username();
-        this.password = encoder.encode(dto.password());
-        this.role = UserRoles.CLIENT;
         this.savedUnits = new ArrayList<>();
+        roles.add(new Role(UserRoles.ROLE_USER));
     }
 }
