@@ -58,5 +58,14 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
+
+    @GetMapping("/login-client")
+    public ResponseEntity<?> loginClient(@RequestBody LoginDTO dto) {
+        try {
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(this.service.loginClient(dto));
+        } catch (UsernameNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
 }
 
