@@ -2,6 +2,10 @@ package br.com.realtour.repository;
 
 import br.com.realtour.entity.Realtor;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
+
 
 public interface RealtorRepository extends MongoRepository<Realtor, String> {
 
@@ -10,5 +14,5 @@ public interface RealtorRepository extends MongoRepository<Realtor, String> {
 
     boolean existsByCreci(String creci);
 
-    Realtor findByUsername(String username);
+    Optional<Realtor> findByUsername(String username);
 }
