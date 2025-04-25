@@ -76,6 +76,22 @@ public class UserService {
         return null;
     }
 
+    public String loginClient(LoginDTO dto){
+
+        try{
+            if (clientRepository.findByUsername(dto.username()).isPresent()){
+                Client client = clientRepository.findByUsername(dto.username()).get();
+                if (encoder.matches(dto.password(), client.getPassword())){
+                    return jwtService.generateToken(client.getUsername());
+                }
+            }
+        } catch (UsernameNotFoundException e){
+            throw new UsernameNotFoundException("Username not found");
+        }
+        return null;
+    }
+
+
 
     private boolean validateCreci(String creci){
         return States.isValidState(creci.substring(0,2).toUpperCase()) && !realtorRepository.existsByCreci(creci);
