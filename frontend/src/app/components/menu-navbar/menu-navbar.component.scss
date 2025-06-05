@@ -1,28 +1,51 @@
-div {
-    background-color: #B8E29C;
-    width: 14vw;
-    height: 4vh;
-    border-radius: 4vb;
-    border: 0.3vh solid #388B11;
-  
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: flex-start;
-    gap: 8px;
-    padding-top: 4px;
-  
-    a {
-      font-family: 'M PLUS 1', Arial, sans-serif;
-      text-decoration: none;
-      padding: 4px 8px; 
-      border-radius: 4vb; 
-      transition: all 0.3s ease;
-  
-      &:hover {
-        background-color: #C6E5B0;
-        border: 0.2vh solid #388B11;
-      }
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+}
+
+.icon {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  margin-top: 1vh;
+  margin-left: 1vw;
+
+  h2 {
+    color: var(--text-color);
+    font-weight: bold;
+    margin: 0;
+
+    .highlight-text {
+      color: #2563eb !important; 
     }
   }
-  
+
+  i {
+    color: #2563eb !important; 
+    font-size: 1.25rem;
+  }
+}
+
+.menu-bar {
+  width: 16vw;
+  margin-top: 2vh;
+
+
+}
+
+.buttons-row {
+  display: flex;
+  gap: 0.50vw;
+  align-items: center;
+  margin-right: 2vw;
+}
+
+p-menubar {
+  --p-menubar-background: var(--p-root-background);
+  --p-menubar-item-focus-background: var(--p-blue-700);
+  --p-menubar-border-color: var(--p-root-background);
+  font-family: 'M PLUS 1', sans-serif;
+}
+

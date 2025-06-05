@@ -1,0 +1,29 @@
+<app-menu-navbar></app-menu-navbar>
+<div class="container">
+  <div class="center-text">
+    <h1>
+      Power your search for your <br> own place
+    </h1>
+    <h3>Experience house hunting like never before</h3>
+    <div class="button-div">
+      <p-button   label="Get Started" [rounded]="true" size="large" [icon]="'pi pi-arrow-right'" iconPos="right"></p-button>
+      <p-button label="Learn More" [rounded]="true" severity="contrast" size="large" [icon]="'pi pi-arrow-up-right'" iconPos="right"></p-button>
+    </div>
+
+    <div class="carousel-wrapper">
+      <p-carousel
+        [value]="images"
+        [numVisible]="1"
+        [circular]="true"
+        [autoplayInterval]="5000"
+        [showIndicators]="true"
+        [showNavigators]="false">
+        <ng-template pTemplate="item" let-image>
+          <div class="image-container">
+            <img [src]="image.src" [alt]="image.alt" style="width: 100%; height: auto;" />
+          </div>
+        </ng-template>
+      </p-carousel>
+    </div>
+  </div>
+</div>

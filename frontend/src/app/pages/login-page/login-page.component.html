@@ -1,0 +1,29 @@
+<div class="container">
+  <div class="icon">
+    <h2>Real<span class="highlight-text">Tour</span></h2>
+    <i class="pi pi-home highlight-text"></i>
+  </div>
+
+<div class="select-slider">
+<p-selectButton 
+    [options]="stateOptions" 
+    [(ngModel)]="selectedState"
+    optionValue="label"
+    size="large">
+</p-selectButton>
+</div>
+
+  <div class="register-div">
+    <h4>Create an account</h4>
+    <h5>Enter your Email to sign up for this app</h5>
+    <p-floatLabel>
+      <input id="email" pInputText placeholder="email" />
+    </p-floatLabel>
+    <p-button label="Sign up with email" class="signup-btn"></p-button>
+    <h6>
+      By clicking continue, you agree to our 
+      <span class="link">Terms of Service</span> and 
+      <span class="link">Privacy Policy</span>
+    </h6>
+  </div>
+</div>

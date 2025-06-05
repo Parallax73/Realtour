@@ -1,8 +1,20 @@
-<div id="menu-navbar">
+<div class="container">
+  <div class="icon">
+    <h2>Real<span class="highlight-text">Tour</span></h2>
+    <i class="pi pi-home highlight-text"></i>
+  </div>
 
-    <a>Home</a>
-    <a>Units</a>
-    <a>Realtor</a>
-    <a>All pages</a>
+  <div class="menu-bar">
+    <p-menubar [model]="items"></p-menubar>
+  </div>
 
+  <div class="buttons-row">
+    <p-button [icon]="'pi pi-language'"></p-button>
+    <p-button icon="pi pi-user" (onClick)="routerService.navigateToLogin()"></p-button>
+    <p-button 
+      (onClick)="toggleDarkMode()"
+      [icon]="isDarkMode ? 'pi pi-sun' : 'pi pi-moon'">
+    </p-button>
+  </div>
 </div>
+
