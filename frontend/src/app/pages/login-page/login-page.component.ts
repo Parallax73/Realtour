@@ -8,7 +8,9 @@ import { SelectModule } from 'primeng/select';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { BrazilianStates, States } from '../../utils/enums/states';
-import { UserService } from '../../services/user/user.service'; 
+import { UserService } from '../../services/user/user.service';
+import { Client } from '../../utils/models/client';
+import { Realtor } from '../../utils/models/realtor';
 
 @Component({
   selector: 'app-login-page',
@@ -40,9 +42,10 @@ export class LoginPageComponent {
   showPasswordFields: boolean = false;
   isRealtor = false;
   states: States[] = BrazilianStates;
-  selectedState: string = '';
+  selectedState: States | null = null;
+  errorMessage: string = '';
  
-   constructor(private userService: UserService) {}
+  constructor(private userService: UserService) {}
 
   stateOptions: any[] = [
     { label: 'Register' },
@@ -54,14 +57,23 @@ export class LoginPageComponent {
     { label: 'Realtor', value: 'realtor'}
   ];
 
+  formatCreci(event: any) {
+    const input = event.target as HTMLInputElement;
+    input.value = input.value.replace(/\D/g, '').substring(0, 6);
+    this.creci = input.value;
+  }
+
   toggle() {
     this.email = '';
     this.password = '';
     this.username = '';
+    this.creci = '';
+    this.selectedState = null;
     this.isSubmitted = false;
     this.showPasswordFields = false;
     this.isEmailValid = true;
     this.optionToggle = this.selectedMode === 'Register';
+    this.errorMessage = '';
   }
 
   validateEmail() {
@@ -69,59 +81,129 @@ export class LoginPageComponent {
     this.isEmailValid = emailRegex.test(this.email);
   }
 
-  onSignupClick() {
-  this.isSubmitted = true;
-  this.validateEmail();
-  
-  if (!this.isEmailValid) {
-    return;
+  validateFields(): boolean {
+    if (!this.email || !this.password || !this.username) {
+      this.errorMessage = 'Please fill in all required fields';
+      return false;
+    }
+
+    if (this.username.length < 4 || this.password.length < 4) {
+      this.errorMessage = 'Username and password must be at least 4 characters';
+      return false;
+    }
+
+    return true;
   }
 
-  if (!this.showPasswordFields) {
-   
-    this.showPasswordFields = true;
-  } else {
-  
-    if (this.password && this.username) { 
+  validateCreci(): boolean {
+    if (!this.selectedState || !this.creci) {
+      this.errorMessage = 'Please select a state and enter CRECI number';
+      return false;
+    }
+
+    const numericCreci = this.creci.replace(/\D/g, '');
+
+    if (numericCreci.length !== 6) {
+      this.errorMessage = 'CRECI number must be exactly 6 digits';
+      return false;
+    }
+
+    if (!/^\d+$/.test(numericCreci)) {
+      this.errorMessage = 'CRECI number must contain only digits';
+      return false;
+    }
+
+    return true;
+  }
+
+  onSignupClick() {
+    this.isSubmitted = true;
+    this.validateEmail();
+    
+    if (!this.isEmailValid) {
+      this.errorMessage = 'Please enter a valid email';
+      return;
+    }
+
+    if (!this.showPasswordFields) {
+      this.showPasswordFields = true;
+      this.errorMessage = '';
+      return;
+    }
+
+    if (!this.validateFields()) {
+      return;
+    }
+
+    if (this.isRealtor) {
+      if (this.validateCreci()) {
+        this.registerRealtor();
+      }
+    } else {
       this.registerClient();
     }
   }
-}
 
   onLoginClick() {
     this.isSubmitted = true;
     this.validateEmail();
     if (this.isEmailValid) {
+      
     }
   }
 
   changeClass() {
     this.isRealtor = this.selectedClass === 'realtor';
-    console.log('isRealtor:', this.isRealtor);
+    if (!this.isRealtor) {
+      this.creci = '';
+      this.selectedState = null;
+      this.errorMessage = '';
+    }
   }
 
   private registerClient() {
-    const client = {
+    const client: Client = {
+      email: this.email,
+      username: this.username,
+      password: this.password
+    };
+
+    this.userService.createClient(client).subscribe({
+      next: (response: string) => {
+        if (response) {
+          this.selectedMode = 'Login';
+          this.toggle();
+        }
+      },
+      error: (errorMessage: string) => {
+        this.errorMessage = errorMessage;
+      }
+    });
+  }
+
+  private registerRealtor() {
+    const formattedCreci = `${this.selectedState}-${this.creci.replace(/\D/g, '')}`;
+
+    const realtor: Realtor = {
       email: this.email,
       username: this.username,
       password: this.password,
-      savedUnits: []
+      creci: formattedCreci
     };
-
-  
-
-     this.userService.createClient(client).subscribe({
-       next: (token: string) => {
-             console.log('Registration successful, token received:', token);
-        },
-        error: (error: unknown) => {
-            if (error instanceof Error) {
-                 console.error('Registration failed:', error.message);
-            } else {
-                console.error('Registration failed:', error);
-             }
-            
+    
+    this.userService.createRealtor(realtor).subscribe({
+      next: (response: string) => {
+        if (response) {
+          this.selectedMode = 'Login';
+          this.toggle();
         }
-     });
-   }
+      },
+      error: (errorMessage: string) => {
+        this.errorMessage = errorMessage;
+      }
+    });
+  }
+
+ 
+
 }

@@ -53,14 +53,30 @@
             placeholder="Select an option">
           </p-select>
 
+           <h6 style="color: red;">{{ errorMessage }}</h6>
+
           @if (isRealtor) {
-            <div class="realtor-section mb-3">
-              <p-inputGroup>
-                <p-select size="small"  [options]="states" [virtualScroll]="true" virtualScrollItemSize="28"></p-select>
-                <input type="text" pInputText placeholder="Enter your creci">
-              </p-inputGroup>
-            </div>
-          }
+          <div class="realtor-section mb-3">
+            <p-inputGroup>
+              <p-select 
+                size="small"  
+                [options]="states" 
+                [virtualScroll]="true" 
+                virtualScrollItemSize="28"
+                [(ngModel)]="selectedState"
+                placeholder="Select state">
+              </p-select>
+              <input 
+                type="text" 
+                pInputText 
+                placeholder="Enter your creci"
+                [(ngModel)]="creci"
+                maxlength="6"
+                minlength="6"
+                required>
+            </p-inputGroup>
+  </div>
+}
         </div>
       }
 
@@ -110,7 +126,7 @@
       <h6>
         By clicking continue, you agree to our 
         <span class="link">Terms of Service</span> and 
-        <span class="link">Privacy Policy</span>
+        <span class="link">Privacy Policy</span>  
       </h6>
     </div>
   }
