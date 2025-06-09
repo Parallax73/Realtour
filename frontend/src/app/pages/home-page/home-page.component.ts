@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MenuNavbarComponent } from "../../components/menu-navbar/menu-navbar.component";
 import { ButtonModule } from 'primeng/button';
 import { CarouselModule } from 'primeng/carousel';
-import { Router } from '@angular/router';
+import { RouterService } from '../../services/router/router.service';
 
 @Component({
   selector: 'app-home-page',
@@ -16,7 +16,8 @@ import { Router } from '@angular/router';
 })
 export class HomePageComponent {
 
-  constructor(private router: Router) {}
+
+  routerService = inject(RouterService);
 
   images = [
     { src: 'assets/images/room-sample.png', alt: 'House 1' },

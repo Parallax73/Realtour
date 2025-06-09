@@ -1,29 +1,117 @@
+<app-menu-navbar></app-menu-navbar>
+
 <div class="container">
-  <div class="icon">
-    <h2>Real<span class="highlight-text">Tour</span></h2>
-    <i class="pi pi-home highlight-text"></i>
+  <div class="select-slider">
+    <p-selectButton 
+      [options]="stateOptions" 
+      [(ngModel)]="selectedMode"
+      optionValue="label"
+      size="large"
+      (onChange)="toggle()">
+    </p-selectButton>
   </div>
 
-<div class="select-slider">
-<p-selectButton 
-    [options]="stateOptions" 
-    [(ngModel)]="selectedState"
-    optionValue="label"
-    size="large">
-</p-selectButton>
-</div>
+  @if (optionToggle) {
+    <div class="register-div">
+      <h4>Create an account</h4>
+      <h5>Enter your Email to sign up for this app</h5>
+      <div class="email-container mb-3">
+        <input 
+          placeholder="Email" 
+          class="input" 
+          type="email" 
+          [(ngModel)]="email"
+          [ngClass]="{'invalid': !isEmailValid && isSubmitted}"
+          required
+        >
+        @if (!isEmailValid && isSubmitted) {
+          <div class="error-message">The email is invalid</div>
+        }
+      </div>
 
-  <div class="register-div">
-    <h4>Create an account</h4>
-    <h5>Enter your Email to sign up for this app</h5>
-    <p-floatLabel>
-      <input id="email" pInputText placeholder="email" />
-    </p-floatLabel>
-    <p-button label="Sign up with email" class="signup-btn"></p-button>
-    <h6>
-      By clicking continue, you agree to our 
-      <span class="link">Terms of Service</span> and 
-      <span class="link">Privacy Policy</span>
-    </h6>
-  </div>
+      @if (showPasswordFields) {
+        <div class="password-container">
+          <input 
+            placeholder="Username" 
+            class="input mb-3" 
+            type="text" 
+            [(ngModel)]="username"
+            required
+          >
+          <input 
+            placeholder="Password" 
+            class="input mb-3" 
+            type="password" 
+            [(ngModel)]="password"
+            required
+          >
+          <p-select 
+            class="mb-3"
+            [options]="classOptions" 
+            (onChange)="changeClass()" 
+            [(ngModel)]="selectedClass" 
+            placeholder="Select an option">
+          </p-select>
+
+          @if (isRealtor) {
+            <div class="realtor-section mb-3">
+              <p-inputGroup>
+                <p-select size="small"  [options]="states" [virtualScroll]="true" virtualScrollItemSize="28"></p-select>
+                <input type="text" pInputText placeholder="Enter your creci">
+              </p-inputGroup>
+            </div>
+          }
+        </div>
+      }
+
+      <p-button 
+        [label]="showPasswordFields ? 'Create Account' : 'Sign up with email'" 
+        class="signup-btn"
+        (onClick)="onSignupClick()"
+      ></p-button>
+      <h6>
+        By clicking continue, you agree to our 
+        <span class="link">Terms of Service</span> and 
+        <span class="link">Privacy Policy</span>
+      </h6>
+    </div>
+  }
+
+  @if (!optionToggle) {
+    <div class="login-div">
+      <h4>Welcome back</h4>
+      <h5>Login to your account</h5>
+      <div class="input-container">
+        <input 
+          placeholder="Email" 
+          class="input" 
+          type="email" 
+          [(ngModel)]="email"
+          [ngClass]="{'invalid': !isEmailValid && isSubmitted}"
+          required
+        >
+        @if (!isEmailValid && isSubmitted) {
+          <div class="error-message">The email is invalid</div>
+        }
+        <input 
+          placeholder="Password" 
+          class="input" 
+          type="password" 
+          [(ngModel)]="password"
+          required
+        >
+      </div>
+
+      <p-button 
+        label="Log in" 
+        class="login-btn"
+        (onClick)="onLoginClick()"
+      ></p-button>
+      <h6>
+        By clicking continue, you agree to our 
+        <span class="link">Terms of Service</span> and 
+        <span class="link">Privacy Policy</span>
+      </h6>
+    </div>
+  }
 </div>

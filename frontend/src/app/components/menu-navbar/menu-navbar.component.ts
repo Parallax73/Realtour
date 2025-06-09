@@ -4,8 +4,8 @@ import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { isPlatformBrowser } from '@angular/common';
 import { SplitButtonModule } from 'primeng/splitbutton';
-import { RouterService } from '../../services/router.service';
-
+import { RouterService } from '../../services/router/router.service';
+import { MenuModule } from 'primeng/menu';
 
 @Component({
   selector: 'app-menu-navbar',
@@ -20,81 +20,121 @@ import { RouterService } from '../../services/router.service';
 })
 export class MenuNavbarComponent implements OnInit {
 
-    
-    routerService = inject(RouterService);
-    private readonly platformId = inject(PLATFORM_ID);
-    items: MenuItem[] | undefined;
-    visible: boolean = false;
-    isDarkMode = false;
-    useritems: MenuItem[] | undefined;
+  routerService = inject(RouterService);
+  private readonly platformId = inject(PLATFORM_ID);
+  
+  items: MenuItem[] | undefined;
+  visible: boolean = false;
+  isDarkMode = false;
+  useritems: MenuItem[] | undefined;
 
-    showDialog() {
-        this.visible = true;
-    }
+  showDialog() {
+    this.visible = true;
+  }
 
-   
-    private updateThemeClass(isDark: boolean): void {
-        if (isPlatformBrowser(this.platformId)) {
-            const element = document.documentElement;
-            if (element) {
-                if (isDark) {
-                    element.classList.add('my-app-dark');
-                } else {
-                    element.classList.remove('my-app-dark');
-                }
-            }
+  private updateThemeClass(isDark: boolean): void {
+    if (isPlatformBrowser(this.platformId)) {
+      const element = document.documentElement;
+      if (element) {
+        if (isDark) {
+          element.classList.add('my-app-dark');
+        } else {
+          element.classList.remove('my-app-dark');
         }
+      }
+    }
+  }
+
+  ngOnInit() {
+    if (isPlatformBrowser(this.platformId)) {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme) {
+        this.isDarkMode = savedTheme === 'dark';
+        this.updateThemeClass(this.isDarkMode);
+      } else {
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        this.isDarkMode = prefersDark;
+        this.updateThemeClass(this.isDarkMode);
+      }
     }
 
-    ngOnInit() {
-        if (isPlatformBrowser(this.platformId)) {
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme) {
-                this.isDarkMode = savedTheme === 'dark';
-                this.updateThemeClass(this.isDarkMode);
-            } else {
-                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                this.isDarkMode = prefersDark;
-                this.updateThemeClass(this.isDarkMode);
-            }
+    this.useritems = [
+      {
+        label: 'Login',
+        command: () => {
+          this.routerService.navigateToLogin();
         }
-
-
-        this.items = [
-            {
-                label: 'Home'
-            },
-            {
-                label: 'Units'
-            },
-            {
-              label: 'Realtors'
-            },
-            {
-                label: 'All pages',
-                items: [
-                    {
-                        label: 'Code'
-                    },
-                    {
-                      label: 'Map'
-                    },
-                    {
-                        label: 'Contact'
-                    },
-                    {
-                        label: 'Models'
-                    }
-                ]
-            }
-        ];
-    }
-
-    toggleDarkMode() {
-        if (isPlatformBrowser(this.platformId)) {
-            this.isDarkMode = !this.isDarkMode;
-            this.updateThemeClass(this.isDarkMode);
-            localStorage.setItem('theme', this.isDarkMode ? 'dark' : 'light');
+      },
+      {
+        label: 'Register',
+        command: () => {
+          this.routerService.navigateToRegister();
         }
+      }
+    ];
+
+    this.items = [
+      {
+        label: 'Home',
+        command: () => {
+          this.routerService.navigateToHome();
+        }
+      },
+      {
+        label: 'Units',
+        command: () => {
+          this.routerService.navigateToUnits();
+        }
+      },
+      {
+        label: 'Realtors',
+        command: () => {
+          this.routerService.navigateToRealtors();
+        }
+      },
+      {
+        label: 'All pages',
+        items: [
+          {
+            label: 'Code',
+            command: () => {
+              this.routerService.navigateToCode();
+            }
+          },
+          {
+            label: 'Map',
+            command: () => {
+              this.routerService.navigateToMap();
+            }
+          },
+          {
+            label: 'Contact',
+            command: () => {
+              this.routerService.navigateToContact();
+            }
+          },
+          {
+            label: 'Models',
+            command: () => {
+              this.routerService.navigateToModels();
+            }
+          },
+          {
+            label: 'Model Editor',
+            command: () => {
+              this.routerService.navigateToEditor();
+            }
+          }
+        ]
+      }
+    ];
+  }
+
+  toggleDarkMode() {
+    if (isPlatformBrowser(this.platformId)) {
+      this.isDarkMode = !this.isDarkMode;
+      this.updateThemeClass(this.isDarkMode);
+      localStorage.setItem('theme', this.isDarkMode ? 'dark' : 'light');
     }
+  }
 }
