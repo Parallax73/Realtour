@@ -1,18 +1,14 @@
 package br.com.realtour.repository;
 
 import br.com.realtour.entity.Realtor;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import org.springframework.stereotype.Repository;
+import reactor.core.publisher.Mono;
 
-import java.util.Optional;
-
-
-public interface RealtorRepository extends MongoRepository<Realtor, String> {
-
-
-    boolean existsByUsername(String username);
-
-    boolean existsByCreci(String creci);
-
-    Optional<Realtor> findByUsername(String username);
+@Repository
+public interface RealtorRepository extends ReactiveMongoRepository<Realtor, String> {
+    Mono<Boolean> existsByUsername(String username);
+    Mono<Boolean> existsByCreci(String creci);
+    Mono<Realtor> findByUsername(String username);
+    Mono<Realtor> findByEmail(String email);
 }
