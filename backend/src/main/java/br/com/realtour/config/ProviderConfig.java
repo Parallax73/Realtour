@@ -1,6 +1,6 @@
 package br.com.realtour.config;
 
-import br.com.realtour.service.CustomUserDetailsService;
+import br.com.realtour.util.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
