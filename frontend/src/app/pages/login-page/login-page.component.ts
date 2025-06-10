@@ -11,6 +11,7 @@ import { BrazilianStates, States } from '../../utils/enums/states';
 import { UserService } from '../../services/user/user.service';
 import { Client } from '../../utils/models/client';
 import { Realtor } from '../../utils/models/realtor';
+import { RouterService } from '../../services/router/router.service';
 
 @Component({
   selector: 'app-login-page',
@@ -45,7 +46,7 @@ export class LoginPageComponent {
   selectedState: States | null = null;
   errorMessage: string = '';
  
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService, private router: RouterService) {}
 
   stateOptions: any[] = [
     { label: 'Register' },
@@ -144,14 +145,23 @@ export class LoginPageComponent {
     }
   }
 
-  onLoginClick() {
+ onLoginClick() {
     this.isSubmitted = true;
     this.validateEmail();
+
     if (this.isEmailValid) {
-      
+      this.userService.loginClient(this.email, this.password).subscribe({
+        next: (success: boolean) => {
+          if (success) {
+            this.router.navigateToHome(); 
+          }
+        },
+        error: () => {
+          alert('Invalid login credentials.');
+        }
+      });
     }
   }
-
   changeClass() {
     this.isRealtor = this.selectedClass === 'realtor';
     if (!this.isRealtor) {
