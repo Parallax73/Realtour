@@ -4,22 +4,25 @@ import { Client } from '../../utils/models/client';
 import { Realtor } from '../../utils/models/realtor';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
+  token!: string;
   constructor() { }
 
   private http = inject(HttpClient);
+  authService = inject(AuthService);
   private readonly apiUrl = 'http://localhost:8080/api/v1/users';
-  private token: string = '';
+ 
 
   createClient(client: Client): Observable<string> {
     console.log('Creating client with data:', { ...client, password: '[REDACTED]' });
     
-    return this.http.post('${this.apiUrl}/register-client', client, { 
-      responseType: 'text',  // <-- This is the key change
+    return this.http.post(`${this.apiUrl}/register-client`, client, { 
+      responseType: 'text', 
       observe: 'response',
       headers: new HttpHeaders({
         'Content-Type': 'application/json'
@@ -33,10 +36,10 @@ export class UserService {
       }),
       catchError((error: HttpErrorResponse) => {
         if (error.status === 201) {
-          // If we somehow get here with a 201 status, it's still a success
+  
           return "Registration successful";
         }
-        // For actual errors
+   
         const errorMessage = error.error || error.message || 'An unexpected error occurred';
         return throwError(() => errorMessage);
       })
@@ -44,8 +47,8 @@ export class UserService {
   }
 
   createRealtor(realtor: Realtor): Observable<string> {
-    return this.http.post('${this.apiUrl}/register-realtor', realtor, { 
-      responseType: 'text',  // <-- Same change here
+    return this.http.post(`${this.apiUrl}/register-realtor`, realtor, { 
+      responseType: 'text',  
       observe: 'response',
       headers: new HttpHeaders({
         'Content-Type': 'application/json'
@@ -68,18 +71,22 @@ export class UserService {
   }
 
 
-  loginClient(email: string, password: string) {
-  const bodyData = {
-    email: email,
-    password: password
-  };
+  loginClient(email: string, password: string): Observable<boolean> {
+    const bodyData = { email, password };
 
-  this.http.post(`${this.apiUrl}/login-client`, bodyData, {
-    responseType: 'text'
-  }).subscribe((result) => {
-    const jwt = result.substring(16).replaceAll('"', "").replaceAll("}", "");
-    this.jwt
-  });
-}
+    return this.http.post(`${this.apiUrl}/login-client`, bodyData, {
+      responseType: 'text'
+    }).pipe(
+      map((token: string) => {
+        this.token = token;
+        this.authService.setToken(this.token);
+        return true; 
+      }),
+      catchError((error) => {
+        console.error("Login failed", error);
+        return throwError(() => new Error('Login failed'));
+      })
+    );
+  }
 
 }
