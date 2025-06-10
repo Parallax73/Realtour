@@ -2,7 +2,7 @@
 package br.com.realtour.config;
 
 
-import br.com.realtour.service.CustomUserDetailsService;
+import br.com.realtour.util.CustomUserDetailsService;
 import br.com.realtour.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
