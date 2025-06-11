@@ -149,4 +149,9 @@ export class MenuNavbarComponent implements OnInit {
     this.routerService.navigateToLogin();
     }  
   }
+
+  logout(){
+    this.authService.deleteToken();
+    window.location.reload();
+  }
 }
