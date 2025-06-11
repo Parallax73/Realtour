@@ -1,27 +1,32 @@
 package br.com.realtour.entity;
 
-import lombok.*;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-import java.util.ArrayList;
+import lombok.Builder;
+import lombok.Data;
+import java.time.LocalDateTime;
 import java.util.List;
 
-@Document
-@Setter
-@Getter
-@AllArgsConstructor
-@NoArgsConstructor
+@Data
 @Builder
+@Document(collection = "chats")
 public class Chat {
-
     @Id
-    public String id;
-    Realtor realtor;
-    Client client;
-    List<Message> messages = new ArrayList<>();
+    private String id;
+    @DBRef
+    private Client client;
+    @DBRef
+    private Realtor realtor;
+    @DBRef
+    private Unit unit; // Added reference to the Unit
+    private LocalDateTime timestamp;
+    private List<Message> messages;
+    private MessageType type;
 
-    public void addMessage(Message message){
-        this.messages.add(message);
+    public enum MessageType {
+        CHAT,
+        JOIN,
+        LEAVE
     }
 }

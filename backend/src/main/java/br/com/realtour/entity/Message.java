@@ -1,23 +1,17 @@
 package br.com.realtour.entity;
 
-
-import br.com.realtour.util.Sender;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import java.time.LocalDateTime;
 
-
-import java.util.Date;
-
-
-
-@Setter
-@Getter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Message {
-    public String message;
-    public Sender sender;
-    public Date sended;
+    private String content;
+    private String senderUsername;
+    private LocalDateTime timestamp;
 }

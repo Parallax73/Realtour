@@ -23,7 +23,7 @@ import java.util.Set;
 @Document
 @Getter
 @Setter
-public class Realtor implements Sender {
+public class Realtor /*implements Sender*/ {
 
     @Id
     private String id;
