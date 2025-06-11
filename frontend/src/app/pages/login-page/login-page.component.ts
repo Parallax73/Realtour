@@ -12,6 +12,7 @@ import { UserService } from '../../services/user/user.service';
 import { Client } from '../../utils/models/client';
 import { Realtor } from '../../utils/models/realtor';
 import { RouterService } from '../../services/router/router.service';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'app-login-page',

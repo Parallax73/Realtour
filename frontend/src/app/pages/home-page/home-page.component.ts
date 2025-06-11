@@ -4,6 +4,7 @@ import { ButtonModule } from 'primeng/button';
 import { CarouselModule } from 'primeng/carousel';
 import { RouterService } from '../../services/router/router.service';
 
+
 @Component({
   selector: 'app-home-page',
   imports: [

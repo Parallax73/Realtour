@@ -16,7 +16,14 @@ export class AuthService {
   }
 
   deleteToken(){
-    return localStorage
+    return localStorage.removeItem("Token")
+  }
+
+  isTokenPresent(){
+    if (localStorage.getItem("Token") == null){
+      return false;
+    }
+    return true
   }
 
 }

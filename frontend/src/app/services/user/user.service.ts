@@ -74,7 +74,7 @@ export class UserService {
   loginClient(email: string, password: string): Observable<boolean> {
     const bodyData = { email, password };
 
-    return this.http.post(`${this.apiUrl}/login-client`, bodyData, {
+    return this.http.post(`${this.apiUrl}/login`, bodyData, {
       responseType: 'text'
     }).pipe(
       map((token: string) => {

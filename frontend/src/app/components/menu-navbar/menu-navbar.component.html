@@ -10,11 +10,15 @@
 
   <div class="buttons-row">
     <p-button [icon]="'pi pi-language'"></p-button>
-    <p-button icon="pi pi-user" (onClick)="routerService.navigateToLogin()"></p-button>
+    <p-button icon="pi pi-user" (onClick)="toggleUser()"></p-button>
+    <p-popover #popover>
+      <p-button class="logout-button" (onClick)="this.authService.deleteToken()"  label="Logout"></p-button>
+    </p-popover>
     <p-button 
       (onClick)="toggleDarkMode()"
       [icon]="isDarkMode ? 'pi pi-sun' : 'pi pi-moon'">
     </p-button>
   </div>
+
 </div>
 

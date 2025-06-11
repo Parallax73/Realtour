@@ -1,11 +1,12 @@
-import { Component, OnInit, inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, inject, PLATFORM_ID, ViewChild } from '@angular/core';
 import { MenubarModule } from 'primeng/menubar';
 import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { isPlatformBrowser } from '@angular/common';
 import { SplitButtonModule } from 'primeng/splitbutton';
 import { RouterService } from '../../services/router/router.service';
-import { MenuModule } from 'primeng/menu';
+import { Popover, PopoverModule } from 'primeng/popover';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'app-menu-navbar',
@@ -13,14 +14,17 @@ import { MenuModule } from 'primeng/menu';
   imports: [
     MenubarModule,
     ButtonModule,
-    SplitButtonModule
+    SplitButtonModule,
+    PopoverModule
   ],
   templateUrl: './menu-navbar.component.html',
   styleUrls: ['./menu-navbar.component.scss']
 })
 export class MenuNavbarComponent implements OnInit {
 
+  @ViewChild('popover') popover!: Popover;
   routerService = inject(RouterService);
+  authService = inject(AuthService)
   private readonly platformId = inject(PLATFORM_ID);
   
   items: MenuItem[] | undefined;
@@ -136,5 +140,13 @@ export class MenuNavbarComponent implements OnInit {
       this.updateThemeClass(this.isDarkMode);
       localStorage.setItem('theme', this.isDarkMode ? 'dark' : 'light');
     }
+  }
+
+  toggleUser(){
+    if(this.authService.isTokenPresent()){
+      this.popover.toggle(event);
+    } else{
+    this.routerService.navigateToLogin();
+    }  
   }
 }
