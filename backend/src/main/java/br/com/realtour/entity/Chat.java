@@ -19,7 +19,7 @@ public class Chat {
     @DBRef
     private Realtor realtor;
     @DBRef
-    private Unit unit; // Added reference to the Unit
+    private Unit unit;
     private LocalDateTime timestamp;
     private List<Message> messages;
     private MessageType type;
