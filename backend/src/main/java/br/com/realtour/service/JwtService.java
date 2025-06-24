@@ -7,7 +7,6 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -20,9 +19,9 @@ public class JwtService {
     @Value("${jwt.token.secret}")
     private  String secret;
 
-    public String generateToken(String username){
+    public String generateToken(String email){
         return Jwts.builder()
-                .setSubject(username)
+                .setSubject(email)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000*60*60*8))
                 .signWith(getSignKey())
@@ -46,7 +45,7 @@ public class JwtService {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String extractUsername(String token){
+    public String extractEmail(String token){
         return Jwts.parserBuilder()
                 .setSigningKey(getSignKey())
                 .build()

@@ -12,7 +12,7 @@
     <p-button [icon]="'pi pi-language'"></p-button>
     <p-button icon="pi pi-user" (onClick)="toggleUser()"></p-button>
     <p-popover #popover>
-      <p-button class="logout-button" (onClick)="logout()"  label="Logout"></p-button>
+      <p-button class="logout-button" type="button" (onClick)="logout()"  label="Logout"></p-button>
     </p-popover>
     <p-button 
       (onClick)="toggleDarkMode()"

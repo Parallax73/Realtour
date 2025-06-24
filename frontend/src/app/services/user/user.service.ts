@@ -75,7 +75,8 @@ export class UserService {
     const bodyData = { email, password };
 
     return this.http.post(`${this.apiUrl}/login`, bodyData, {
-      responseType: 'text'
+      responseType: 'text',
+      withCredentials: true
     }).pipe(
       map((token: string) => {
         this.token = token;

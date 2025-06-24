@@ -14,4 +14,11 @@ public class Message {
     private String content;
     private String senderUsername;
     private LocalDateTime timestamp;
+    private MessageType type;
+
+    public enum MessageType {
+        CHAT,
+        JOIN,
+        LEAVE
+    }
 }

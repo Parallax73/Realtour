@@ -1,119 +1,74 @@
-import { Injectable, OnDestroy } from '@angular/core';
-import { Client, StompSubscription } from '@stomp/stompjs';
-import SockJS from 'sockjs-client';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
-
-
-export interface ChatMessage {
-  content: string;
-  senderUsername: string;
-  timestamp: string;
-}
-
-
-export interface Chat {
-  id: string;
-  realtor: any;
-  client: any;
-  unit: any;
-  messages: ChatMessage[];
-  timestamp: string;
-}
+import { Injectable } from '@angular/core';
+import { CookieService } from 'ngx-cookie-service';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
-export class WebsocketService implements OnDestroy {
-  private stompClient: Client;
-  private chatSubject = new BehaviorSubject<Chat | null>(null);
-   private topicSubscription: StompSubscription | null = null;
+export class WebsocketService {
+  private socket: WebSocket | null = null;
+  private readonly socketBaseUrl = 'ws://localhost:8080/ws/chat';
+  private readonly cookieName = 'SecureJWT';
+  private chatId: string | null = null;
 
-  public chat$: Observable<Chat | null> = this.chatSubject.asObservable();
+  public chatMessages$ = new BehaviorSubject<any>(null);
 
-  constructor() {
+  constructor(private cookieService: CookieService) {}
 
-    this.stompClient = new Client({
-      webSocketFactory: () => new SockJS('http://localhost:8080/ws'),
-      connectHeaders: { Authorization: `Bearer ${this.getToken()}` },
-      debug: (str) => { console.log('STOMP:', str); },
-      reconnectDelay: 5000,
-    });
+  connect(chatId: string): void {
+    const token = this.cookieService.get(this.cookieName);
 
-    this.stompClient.onConnect = () => {
-      console.log('STOMP: Connected!');
+    if (!token) {
+      console.error('JWT token not found in cookies');
+      return;
+    }
 
-      if (this.chatSubject.value?.id) {
-          this.subscribeToChatTopic(this.chatSubject.value.id);
+    this.chatId = chatId;
+    const url = `${this.socketBaseUrl}?chatId=${chatId}&token=${token}`;
+    this.socket = new WebSocket(url);
+
+    this.socket.onopen = () => {
+      console.log('WebSocket connection opened');
+    };
+
+    this.socket.onmessage = (event: MessageEvent) => {
+      try {
+        const data = JSON.parse(event.data);
+        this.chatMessages$.next(data);
+      } catch (err) {
+        console.error('Failed to parse WebSocket message', err);
       }
     };
 
-    this.stompClient.activate();
+    this.socket.onerror = (event: Event) => {
+      console.error('WebSocket error', event);
+    };
+
+    this.socket.onclose = () => {
+      console.log('WebSocket connection closed');
+      this.socket = null;
+    };
   }
 
-
-  public joinChat(chat: Chat): void {
-
-      if (this.chatSubject.value && this.chatSubject.value.id !== chat.id) {
-          this.leaveChat();
-      }
-
-      this.chatSubject.next(chat);
-
-      if (this.stompClient.connected) {
-          this.subscribeToChatTopic(chat.id);
-      }
-  }
-
-  private subscribeToChatTopic(chatId: string): void {
-    const topic = `/topic/chat/${chatId}`;
-    console.log(`Subscribing to ${topic}`);
-
-    this.topicSubscription = this.stompClient.subscribe(topic, (message) => {
-      const updatedChat = JSON.parse(message.body);
-      this.chatSubject.next(updatedChat);
-    });
-  }
-
-
-  sendMessage(chatId: string, messageContent: string): void {
-    if (this.stompClient.connected) {
-      const chatMessage: Partial<ChatMessage> = {
-        content: messageContent,
-      };
-
-      this.stompClient.publish({
-        destination: `/app/chat/${chatId}/sendMessage`,
-        body: JSON.stringify(chatMessage)
-      });
-    } else {
-        console.error("Cannot send message, STOMP client is not connected.");
+  sendMessage(content: string): void {
+    if (!this.socket || this.socket.readyState !== WebSocket.OPEN || !this.chatId) {
+      console.error('WebSocket not connected or chatId missing');
+      return;
     }
+
+    const message = {
+      content,
+      timestamp: null
+    };
+
+    this.socket.send(JSON.stringify(message));
   }
 
-
-  public leaveChat(): void {
-      if (this.topicSubscription) {
-          this.topicSubscription.unsubscribe();
-          this.topicSubscription = null;
-          this.chatSubject.next(null);
-          console.log("Left chat and unsubscribed from topic.");
-      }
-  }
-
-  ngOnDestroy() {
-    this.leaveChat();
-    this.stompClient.deactivate();
-  }
-
-   private getToken(): string {
-
-    return document.cookie
-
-      .split('; ')
-
-      .find(row => row.startsWith('__Secure-JWT='))
-
-      ?.split('=')[1] || '';
-
+  disconnect(): void {
+    if (this.socket) {
+      this.socket.close();
+      this.socket = null;
+    }
+    this.chatId = null;
   }
 }

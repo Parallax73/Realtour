@@ -1,5 +1,6 @@
 package br.com.realtour.controller;
 
+
 import br.com.realtour.exception.InvalidCredientialsException;
 import br.com.realtour.service.UserService;
 import br.com.realtour.util.LoginDTO;
@@ -49,9 +50,9 @@ public class UserController {
     public Mono<ResponseEntity<String>> login(@RequestBody LoginDTO dto) {
         return service.login(dto)
                 .map(token -> {
-                    ResponseCookie cookie = ResponseCookie.from("__Secure-JWT", token)
-                            .httpOnly(true)
-                            .secure(true)
+                    ResponseCookie cookie = ResponseCookie.from("SecureJWT", token)
+                            .httpOnly(false)
+                            .secure(false)//For development only
                             .path("/")
                             .maxAge(7 * 24 * 60 * 60)
                             .sameSite("Strict")

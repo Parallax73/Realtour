@@ -144,8 +144,10 @@ export class MenuNavbarComponent implements OnInit {
 
   toggleUser(){
     if(this.authService.isTokenPresent()){
+      console.log("CAlled")
       this.popover.toggle(event);
     } else{
+      console.log("Notcalled")
     this.routerService.navigateToLogin();
     }  
   }

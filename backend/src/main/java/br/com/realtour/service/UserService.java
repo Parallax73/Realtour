@@ -90,6 +90,7 @@ public class UserService {
 
 
 
+
     private Mono<Boolean> validateCreci(String creci) {
         return Mono.just(creci)
                 .map(c -> c.matches("[A-Z]{2}-\\d{6}"))  // Changed to 6 digits

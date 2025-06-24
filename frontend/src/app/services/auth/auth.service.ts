@@ -37,16 +37,16 @@ export class AuthService implements HttpInterceptor {
     localStorage.setItem('Token', token);
   }
 
-  getToken() {
-    return localStorage.getItem('Token');
-  }
+  getToken(): string | null {
+  const token = this.cookieService.get('SecureJWT');
+  return token || null;
+}
 
-  deleteToken() {
-    this.cookieService.delete('__Secure-JWT');
-    return localStorage.removeItem('Token');
+  deleteToken() : void {
+    this.cookieService.delete('SecureJWT');
   }
 
   isTokenPresent() {
-    return localStorage.getItem('Token') != null;
+    return this.cookieService.check('SecureJWT') != null;
   }
 }

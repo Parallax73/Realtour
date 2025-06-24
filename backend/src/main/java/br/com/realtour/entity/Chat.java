@@ -1,5 +1,6 @@
 package br.com.realtour.entity;
 
+import lombok.AllArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -10,6 +11,7 @@ import java.util.List;
 
 @Data
 @Builder
+@AllArgsConstructor
 @Document(collection = "chats")
 public class Chat {
     @Id
@@ -20,13 +22,6 @@ public class Chat {
     private Realtor realtor;
     @DBRef
     private Unit unit;
-    private LocalDateTime timestamp;
     private List<Message> messages;
-    private MessageType type;
 
-    public enum MessageType {
-        CHAT,
-        JOIN,
-        LEAVE
-    }
 }

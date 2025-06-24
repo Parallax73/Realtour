@@ -3,67 +3,58 @@ package br.com.realtour.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
+import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
+import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import java.util.Arrays;
-import java.util.List;
+import org.springframework.web.cors.reactive.CorsWebFilter;
+import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 
 @Configuration
-@EnableWebSecurity
+@EnableWebFluxSecurity
+@EnableReactiveMethodSecurity
 public class SecurityConfig {
 
-    private final JwtAuthFilter filter;
-    private final AuthenticationProvider provider;
+    private final JwtAuthManager jwtAuthManager;
+    private final JwtSecurityContextRepository jwtSecurityContextRepository;
 
-    public SecurityConfig(JwtAuthFilter filter, AuthenticationProvider provider) {
-        this.provider = provider;
-        this.filter = filter;
+    public SecurityConfig(JwtAuthManager jwtAuthManager, JwtSecurityContextRepository jwtSecurityContextRepository) {
+        this.jwtAuthManager = jwtAuthManager;
+        this.jwtSecurityContextRepository = jwtSecurityContextRepository;
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(authorize ->
-                        authorize
-                                .requestMatchers(
-                                        "/api/v1/users/register-realtor",
-                                        "/api/v1/users/register-client",
-                                        "/api/v1/users/login",
-                                        "/ws/**"  // Allow WebSocket connections
-                                ).permitAll()
-                                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Allow CORS preflight
-                                .anyRequest().authenticated()
+    public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
+        return http
+                .csrf(ServerHttpSecurity.CsrfSpec::disable)
+                .authorizeExchange(exchanges -> exchanges
+                        .pathMatchers(
+                                "/api/v1/users/register-realtor",
+                                "/api/v1/users/register-client",
+                                "/api/v1/users/login",
+                                "/ws/**"
+                        ).permitAll()
+                        .pathMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .anyExchange().authenticated()
                 )
-                .authenticationProvider(provider)
-                .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
-
-        return http.build();
+                .authenticationManager(jwtAuthManager)
+                .securityContextRepository(jwtSecurityContextRepository)
+                .build();
     }
 
+
     @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOriginPattern("*"); // For development
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Cookie"));
-        configuration.setAllowCredentials(true);
-        configuration.setExposedHeaders(List.of("Set-Cookie"));
+    public CorsWebFilter corsWebFilter() {
+        CorsConfiguration corsConfig = new CorsConfiguration();
+        corsConfig.setAllowCredentials(true);
+        corsConfig.addAllowedOrigin("http://localhost:4200"); // Set your frontend URL here
+        corsConfig.addAllowedHeader("*");
+        corsConfig.addAllowedMethod("*");
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
+        source.registerCorsConfiguration("/**", corsConfig);
+
+        return new CorsWebFilter(source);
     }
 }

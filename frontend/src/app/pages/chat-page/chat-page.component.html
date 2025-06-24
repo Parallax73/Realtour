@@ -1,2 +1,21 @@
-<app-menu-navbar></app-menu-navbar>
+<div class="chat-container">
+  <div class="chat-header">
+    <h2>Chat Room</h2>
+  </div>
 
+  <div class="chat-messages" *ngIf="websocketService.chatMessages$ | async as message">
+    <div class="message" *ngIf="message">
+      <p><strong>Server:</strong> {{ message.content }}</p>
+    </div>
+  </div>
+
+  <div class="chat-input">
+    <input
+      type="text"
+      [(ngModel)]="messageText"
+      (keydown.enter)="sendMessage()"
+      placeholder="Type your message..."
+    />
+    <button (click)="sendMessage()">Send</button>
+  </div>
+</div>

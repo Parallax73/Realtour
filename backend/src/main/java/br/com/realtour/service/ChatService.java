@@ -24,17 +24,18 @@ public class ChatService {
     @Autowired
     private ClientRepository clientRepository;
     @Autowired
-    private UnitRepository unitRepository; // Autowire UnitRepository
+    private UnitRepository unitRepository;
     @Autowired
     private JwtService jwtService;
 
-    public Mono<Chat> createChat(String token, String unitId, String realtorUsername) {
-        String clientUsername = jwtService.extractUsername(token);
+    public Mono<Chat> createChat(String token, String unitId, String realtorEmail) {
+        String clientEmail = jwtService.extractEmail(token);
+        log.info(token + "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"+clientEmail);
 
-        return clientRepository.findByUsername(clientUsername)
+        return clientRepository.findByEmail(clientEmail)
                 .switchIfEmpty(Mono.error(new RuntimeException("Only clients can initiate a chat.")))
                 .flatMap(client -> {
-                    Mono<Realtor> realtorMono = realtorRepository.findByUsername(realtorUsername);
+                    Mono<Realtor> realtorMono = realtorRepository.findByEmail(realtorEmail);
                     Mono<Unit> unitMono = unitRepository.findById(unitId);
 
                     return Mono.zip(realtorMono, unitMono)
@@ -45,14 +46,13 @@ public class ChatService {
                                 if (realtor == null) return Mono.error(new RuntimeException("Realtor not found."));
                                 if (unit == null) return Mono.error(new RuntimeException("Unit not found."));
 
-                                // Check if a chat already exists for this client, realtor, and unit
+
                                 return chatRepository.findByClientAndRealtorAndUnit(client, realtor, unit)
                                         .switchIfEmpty(Mono.defer(() -> {
                                             Chat newChat = Chat.builder()
                                                     .client(client)
                                                     .realtor(realtor)
                                                     .unit(unit)
-                                                    .timestamp(LocalDateTime.now())
                                                     .messages(new ArrayList<>())
                                                     .build();
                                             return chatRepository.save(newChat);
@@ -67,7 +67,6 @@ public class ChatService {
                 .flatMap(chat -> {
                     message.setTimestamp(LocalDateTime.now());
                     chat.getMessages().add(message);
-                    chat.setTimestamp(LocalDateTime.now());
                     return chatRepository.save(chat);
                 });
     }

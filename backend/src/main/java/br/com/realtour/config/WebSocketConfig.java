@@ -1,70 +1,40 @@
 package br.com.realtour.config;
 
-import br.com.realtour.service.JwtService;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.messaging.Message;
-import org.springframework.messaging.MessageChannel;
-import org.springframework.messaging.simp.config.ChannelRegistration;
-import org.springframework.messaging.simp.config.MessageBrokerRegistry;
-import org.springframework.messaging.simp.stomp.StompCommand;
-import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
-import org.springframework.messaging.support.ChannelInterceptor;
-import org.springframework.messaging.support.MessageHeaderAccessor;
-import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
-import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
-import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
-import org.springframework.web.socket.config.annotation.WebSocketTransportRegistration;
+import org.springframework.web.reactive.HandlerMapping;
+import org.springframework.web.reactive.handler.SimpleUrlHandlerMapping;
+import org.springframework.web.reactive.socket.WebSocketHandler;
+import org.springframework.web.reactive.socket.server.WebSocketService;
+import org.springframework.web.reactive.socket.server.support.WebSocketHandlerAdapter;
+import org.springframework.web.reactive.socket.server.upgrade.ReactorNettyRequestUpgradeStrategy;
+import org.springframework.web.reactive.socket.server.support.HandshakeWebSocketService;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Configuration
-@EnableWebSocketMessageBroker
-@Slf4j
-public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
+public class WebSocketConfig {
 
-    @Autowired
-    private JwtService jwtService;
+    @Bean
+    public HandlerMapping handlerMapping(ChatWebSocketHandler chatWebSocketHandler) {
+        Map<String, WebSocketHandler> map = new HashMap<>();
+        map.put("/ws/chat", chatWebSocketHandler);
 
-    @Override
-    public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws")
-                .setAllowedOriginPatterns("http://localhost:4200")
-                .withSockJS();
+        SimpleUrlHandlerMapping mapping = new SimpleUrlHandlerMapping();
+        mapping.setOrder(1);
+        mapping.setUrlMap(map);
+        return mapping;
     }
 
-    @Override
-    public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/topic", "/user");
-        config.setApplicationDestinationPrefixes("/app");
-        config.setUserDestinationPrefix("/user");
+    @Bean
+    public WebSocketHandlerAdapter handlerAdapter(WebSocketService webSocketService) {
+        return new WebSocketHandlerAdapter(webSocketService);
     }
 
-    @Override
-    public void configureClientInboundChannel(ChannelRegistration registration) {
-        registration.interceptors(new ChannelInterceptor() {
-            @Override
-            public Message<?> preSend(Message<?> message, MessageChannel channel) {
-                StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
-
-                if (accessor != null && StompCommand.CONNECT.equals(accessor.getCommand())) {
-                    String token = accessor.getFirstNativeHeader("Authorization");
-                    log.debug("WebSocket connection with token: {}", token);
-
-                    if (token != null && token.startsWith("Bearer ")) {
-                        token = token.substring(7);
-                        try {
-                            String username = jwtService.extractUsername(token);
-                            if (username != null) {
-                                accessor.setUser(() -> username);
-                                log.info("User '{}' authenticated for WebSocket.", username);
-                            }
-                        } catch (Exception e) {
-                            log.error("WebSocket authentication error: {}", e.getMessage());
-                        }
-                    }
-                }
-                return message;
-            }
-        });
+    @Bean
+    public WebSocketService webSocketService() {
+        return new HandshakeWebSocketService(new ReactorNettyRequestUpgradeStrategy());
     }
 }

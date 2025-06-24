@@ -154,7 +154,7 @@ export class LoginPageComponent {
       this.userService.loginClient(this.email, this.password).subscribe({
         next: (success: boolean) => {
           if (success) {
-            this.router.navigateToHome(); 
+             this.router.navigateToHome(); 
           }
         },
         error: () => {

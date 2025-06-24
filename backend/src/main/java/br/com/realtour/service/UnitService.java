@@ -7,10 +7,12 @@ import br.com.realtour.repository.ClientRepository;
 import br.com.realtour.repository.RealtorRepository;
 import br.com.realtour.repository.UnitRepository;
 import br.com.realtour.util.CreateUnitDTO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+@Slf4j
 @Service
 public class UnitService {
 
@@ -26,12 +28,11 @@ public class UnitService {
     @Autowired
     private UnitRepository unitRepository;
 
-    public Mono<Void> saveUnitToClient(String authHeader, String unitId) {
-        String token = authHeader.startsWith("Bearer ") ? authHeader.substring(7) : authHeader;
-        String username = jwtService.extractUsername(token);
+    public Mono<Void> saveUnitToClient(String token, String unitId) {
+        String email = jwtService.extractEmail(token);
 
         return Mono.zip(
-                clientRepository.findByUsername(username)
+                clientRepository.findByEmail(email)
                         .switchIfEmpty(Mono.error(new RuntimeException("Client not found"))),
                 unitRepository.findById(unitId)
                         .switchIfEmpty(Mono.error(new RuntimeException("Unit not found")))
@@ -44,12 +45,11 @@ public class UnitService {
         }).then();
     }
 
-    public Mono<Void> saveUnitToRealtor(String authHeader, String unitId) {
-        String token = authHeader.startsWith("Bearer ") ? authHeader.substring(7) : authHeader;
-        String username = jwtService.extractUsername(token);
+    public Mono<Void> saveUnitToRealtor(String token, String unitId) {
+        String username = jwtService.extractEmail(token);
 
         return Mono.zip(
-                realtorRepository.findByUsername(username)
+                realtorRepository.findByEmail(username)
                         .switchIfEmpty(Mono.error(new RuntimeException("Realtor not found"))),
                 unitRepository.findById(unitId)
                         .switchIfEmpty(Mono.error(new RuntimeException("Unit not found")))
@@ -62,11 +62,11 @@ public class UnitService {
         }).then();
     }
 
-    public Mono<Unit> createUnit(String authHeader, CreateUnitDTO dto) {
-        String token = authHeader.startsWith("Bearer ") ? authHeader.substring(7) : authHeader;
-        String username = jwtService.extractUsername(token);
+    public Mono<Unit> createUnit(String token, CreateUnitDTO dto) {
+        String email = jwtService.extractEmail(token);
+        log.info(email);
 
-        return realtorRepository.findByUsername(username)
+        return realtorRepository.findByEmail(email)
                 .switchIfEmpty(Mono.error(new RuntimeException("Realtor not found")))
                 .map(realtor -> {
                     Unit unit = new Unit(dto);
