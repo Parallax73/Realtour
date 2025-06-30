@@ -27,8 +27,6 @@
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
     "types": [
-      "@stomp/stompjs",
-      "sockjs-client",
       "node"
     ]
   },
