@@ -1,21 +1,101 @@
-<div class="chat-container">
-  <div class="chat-header">
-    <h2>Chat Room</h2>
-  </div>
-
-  <div class="chat-messages" *ngIf="websocketService.chatMessages$ | async as message">
-    <div class="message" *ngIf="message">
-      <p><strong>Server:</strong> {{ message.content }}</p>
+<!-- <div class="chat-layout">
+  <div class="chat-sidebar">
+    <h3>Your Chats</h3>
+    <div class="chat-list">
+      <div 
+        *ngFor="let chat of chats" 
+        class="chat-item"
+        [class.active]="selectedChat?.id === chat.id"
+        (click)="selectChat(chat)">
+        <div class="chat-item-content">
+          <strong>{{ getChatPartnerName(chat) }}</strong>
+          <span>Unit: {{ chat.unitNumber }}</span>
+        </div>
+      </div>
     </div>
   </div>
 
-  <div class="chat-input">
-    <input
-      type="text"
-      [(ngModel)]="messageText"
-      (keydown.enter)="sendMessage()"
-      placeholder="Type your message..."
-    />
-    <button (click)="sendMessage()">Send</button>
+  <div class="chat-container">
+    <div class="chat-header">
+      <h2>Chat Room</h2>
+      <div *ngIf="selectedChat" class="chat-info">
+        <p>Chat with: {{ getChatPartnerName(selectedChat) }}</p>
+        <p>Unit: {{ selectedChat.unitNumber }}</p>
+      </div>
+    </div>
+
+    <div #messageContainer class="chat-messages">
+      <div *ngIf="messages.length === 0" class="no-messages">
+        <p>No messages yet. Start the conversation!</p>
+      </div>
+      
+      <div class="message" *ngFor="let msg of messages">
+        <div [class]="isCurrentUserMessage(msg) ? 'message-sent' : 'message-received'">
+          <p>
+            <strong>{{ getMessageSenderName(msg) }}:</strong>
+            {{ msg.content }}
+          </p>
+          <small>{{ msg.timestamp | date:'short' }}</small>
+        </div>
+      </div>
+    </div>
+
+    <div class="chat-input">
+      <input
+        type="text"
+        [(ngModel)]="messageText"
+        (keydown.enter)="sendMessage()"
+        placeholder="Type your message..."
+      />
+      <button (click)="sendMessage()">Send</button>
+    </div>
   </div>
+</div> -->
+<app-menu-navbar></app-menu-navbar>
+<div class="container">
+  <div class="select-div">
+    <div class="search-wrapper">
+    <input placeholder="Search chats"/>
+    <i class="pi pi-search"></i>
 </div>
+
+  @for (chat of chats; track chat.id) {
+  <div class="chat-div">
+    <h4 name>{{ getChatPartnerName(chat) }}</h4>
+    <h6 msg>{{ chat.lastMessage }}</h6>
+  </div>
+}
+  </div>
+  <div class="mid-div">
+    <div class="top-bar">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <h4>Endereço, Numero</h4>
+        </div>
+        <a href="localhost:8080">See on the map</a>
+    </div>
+
+    <div style="flex: 1; overflow-y: auto;">
+    </div>
+
+    <div class="chat-input-container">
+    <div class="input-wrapper">
+        <input type="text" placeholder="Enter your message"/>
+        <div class="button-group">
+            <p-button icon="pi pi-reply"/> 
+            <p-button icon="pi pi-images"/>    
+        </div>
+    </div>
+</div>
+
+  </div>
+
+  @if (chatIsSelected) {
+  <div class="right-div">
+    <img class="realtor-picture" src="assets/images/defaultProfile.png" alt="Profile Picture" />
+    <h4>Realtor's name</h4>
+    <p-button label="View Profile"></p-button>
+    <p-button label="See unit page" severity="secondary"></p-button>
+  </div>
+}
+</div>
+
