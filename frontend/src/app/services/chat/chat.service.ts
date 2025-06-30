@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Chat } from '../websocket/websocket.service'
 
 @Injectable({
   providedIn: 'root'
@@ -12,16 +11,31 @@ export class ChatService {
   constructor(private http: HttpClient) { }
 
 
-  getOrCreateChat(unitId: number, realtorUsername: string): Observable<Chat> {
-    const token = this.getToken(); //
+  getChats(): Observable<any> {
+    const token = this.getToken();
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`
     });
 
+    return this.http.get<any>(
+      `${this.apiUrl}/get-chats`,
+      {
+        headers,
+        withCredentials: true
+      }
+    );
+  }
 
-    return this.http.post<Chat>(
-        this.apiUrl,
+  getOrCreateChat(unitId: string, realtorUsername: string): Observable<any> {
+    const token = this.getToken();
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    });
+
+    return this.http.post<any>(
+        this.apiUrl + '/create',
         {},
         {
             headers,
@@ -33,7 +47,7 @@ export class ChatService {
   private getToken(): string {
     return document.cookie
       .split('; ')
-      .find(row => row.startsWith('__Secure-JWT='))
+      .find(row => row.startsWith('SecureJWT='))
       ?.split('=')[1] || '';
   }
 }
