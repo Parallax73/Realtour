@@ -100,9 +100,9 @@ export class MenuNavbarComponent implements OnInit {
         label: 'All pages',
         items: [
           {
-            label: 'Code',
+            label: 'Chat',
             command: () => {
-              this.routerService.navigateToCode();
+              this.routerService.navigateToChat();
             }
           },
           {
@@ -112,21 +112,9 @@ export class MenuNavbarComponent implements OnInit {
             }
           },
           {
-            label: 'Contact',
+            label: 'Contact Us',
             command: () => {
               this.routerService.navigateToContact();
-            }
-          },
-          {
-            label: 'Models',
-            command: () => {
-              this.routerService.navigateToModels();
-            }
-          },
-          {
-            label: 'Model Editor',
-            command: () => {
-              this.routerService.navigateToEditor();
             }
           }
         ]
