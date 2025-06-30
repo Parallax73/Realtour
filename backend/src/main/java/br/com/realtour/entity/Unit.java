@@ -20,6 +20,7 @@ public class Unit {
     // make integration with google maps api
     @Id
     private String id;
+    private String address;
     private String number;
     private Float latitude;
     private Float longitude;
