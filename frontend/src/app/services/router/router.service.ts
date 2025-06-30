@@ -12,7 +12,6 @@ export class RouterService {
   navigateToHome(): void {
     this.router.navigate(['']);
   }
-
   
   navigateToLogin(): void {
     this.router.navigate(['login']);
@@ -34,19 +33,11 @@ export class RouterService {
     this.router.navigate(['map'])
   }
 
-  navigateToModels():void{
-    this.router.navigate(['models'])
-  }
-
   navigateToContact():void{
     this.router.navigate(['contact'])
   }
 
-  navigateToEditor():void{
-    this.router.navigate(['editor'])
-  }
-
-  navigateToCode():void{
-     window.location.href = 'https://github.com/Parallax73/Realtour';
+  navigateToChat():void{
+    this.router.navigate(['chat'])
   }
 }
