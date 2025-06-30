@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Builder
 public class Message {
     private String content;
-    private String senderUsername;
+    private String sender;
     private LocalDateTime timestamp;
     private MessageType type;
 
