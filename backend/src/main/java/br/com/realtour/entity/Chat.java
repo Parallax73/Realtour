@@ -2,11 +2,9 @@ package br.com.realtour.entity;
 
 import lombok.AllArgsConstructor;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import lombok.Builder;
 import lombok.Data;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -16,12 +14,12 @@ import java.util.List;
 public class Chat {
     @Id
     private String id;
-    @DBRef
-    private Client client;
-    @DBRef
-    private Realtor realtor;
-    @DBRef
-    private Unit unit;
+    private String clientEmail;
+    private String clientName;
+    private String realtorEmail;
+    private String realtorName;
+    private String unitId;
+    private String unitAddress;
+    private String unitNumber;
     private List<Message> messages;
-
 }
