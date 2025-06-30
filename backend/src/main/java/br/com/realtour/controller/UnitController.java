@@ -44,4 +44,9 @@ public class UnitController {
         log.info("Token is " + token);
         return service.saveUnitToRealtor(token, unitId);
     }
+
+    @GetMapping("/{id}")
+    public Mono<Unit> getUnit(@PathVariable("id") String id ){
+        return service.getUnitInfo(id);
+    }
 }

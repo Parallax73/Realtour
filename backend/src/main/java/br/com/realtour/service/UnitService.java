@@ -75,4 +75,8 @@ public class UnitService {
                 })
                 .flatMap(unitRepository::save);
     }
+
+    public Mono<Unit> getUnitInfo(String unitId){
+        return unitRepository.findById(unitId).onErrorComplete();
+    }
 }
