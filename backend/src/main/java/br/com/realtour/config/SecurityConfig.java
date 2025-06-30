@@ -33,6 +33,7 @@ public class SecurityConfig {
                                 "/api/v1/users/register-realtor",
                                 "/api/v1/users/register-client",
                                 "/api/v1/users/login",
+                                "api/v1/units/**",
                                 "/ws/**"
                         ).permitAll()
                         .pathMatchers(HttpMethod.OPTIONS, "/**").permitAll()
