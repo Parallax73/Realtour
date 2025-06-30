@@ -2,44 +2,57 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-
+  padding: 0.5rem;
+  min-height: 60px;
 }
 
 .icon {
   display: flex;
   gap: 0.75rem;
   align-items: center;
-  margin-top: 1vh;
-  margin-left: 1vw;
+  padding: 0 1rem;
+  flex-shrink: 0;
 
   h2 {
     color: var(--text-color);
     font-weight: bold;
     margin: 0;
+    white-space: nowrap;
 
     .highlight-text {
-      color: #2563eb !important; 
+      color: #2563eb !important;
     }
   }
 
   i {
-    color: #2563eb !important; 
+    color: #2563eb !important;
     font-size: 1.25rem;
   }
 }
 
 .menu-bar {
-  width: 16vw;
-  margin-top: 2vh;
-
-
+  flex: 0 1 auto;
+  min-width: 200px;
+  max-width: 600px;
+  margin: 0 1rem;
 }
 
 .buttons-row {
   display: flex;
-  gap: 0.50vw;
+  gap: 0.45rem;
   align-items: center;
-  margin-right: 2vw;
+  padding: 0 1rem;
+  flex-shrink: 0;
+}
+
+.buttons-row p-button {
+  margin: 0;
+  padding: 0;
+}
+
+.buttons-row ::ng-deep .p-button {
+  margin: 0;
+  padding: 0.5rem;
 }
 
 p-menubar {
@@ -49,8 +62,54 @@ p-menubar {
   font-family: 'M PLUS 1', sans-serif;
 }
 
-.logout-button{
+.logout-button {
   font-family: 'M PLUS 1', sans-serif;
 }
 
+@media screen and (max-width: 768px) {
+  .container {
+    flex-wrap: nowrap;
+    gap: 0.5rem;
+  }
 
+  .menu-bar {
+    min-width: 150px;
+  }
+
+  .buttons-row {
+    gap: 0.25rem;
+  }
+
+  .buttons-row ::ng-deep .p-button {
+    padding: 0.4rem;
+  }
+}
+
+
+@media screen and (max-width: 480px) {
+  .icon h2 {
+    font-size: 1.2rem;
+  }
+
+  .menu-bar {
+    min-width: 120px;
+  }
+
+  .buttons-row ::ng-deep .p-button {
+    padding: 0.3rem;
+  }
+}
+
+::ng-deep .p-menubar {
+  padding: 0.5rem;
+  border: none;
+}
+
+::ng-deep .p-menubar-root-list {
+  gap: 0.5rem;
+}
+
+::ng-deep .p-menuitem-link {
+  padding: 0.5rem 0.75rem !important;
+  white-space: nowrap;
+}
