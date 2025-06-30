@@ -1,6 +1,24 @@
 import { Injectable } from '@angular/core';
-import { CookieService } from 'ngx-cookie-service';
 import { BehaviorSubject } from 'rxjs';
+import { AuthService } from 'src/app/services/auth/auth.service';
+
+export interface Chat {
+  id: string;
+  clientEmail: string;
+  clientName: string;
+  realtorEmail: string;
+  realtorName: string;
+  unitId: string;
+  unitAddress: string | null;
+  unitNumber: string;
+  messages: Message[];
+}
+
+export interface Message {
+  sender: string;
+  content: string;
+  timestamp: string;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -8,60 +26,50 @@ import { BehaviorSubject } from 'rxjs';
 export class WebsocketService {
   private socket: WebSocket | null = null;
   private readonly socketBaseUrl = 'ws://localhost:8080/ws/chat';
-  private readonly cookieName = 'SecureJWT';
-  private chatId: string | null = null;
+  public chatMessages$ = new BehaviorSubject<Chat | null>(null);
+  private reconnectAttempts = 0;
+  private maxReconnectAttempts = 5;
+  private reconnectDelay = 3000;
 
-  public chatMessages$ = new BehaviorSubject<any>(null);
-
-  constructor(private cookieService: CookieService) {}
+  constructor(private authService: AuthService) {}
 
   connect(chatId: string): void {
-    const token = this.cookieService.get(this.cookieName);
+    const token = this.authService.getToken();
+    if (!token) return;
 
-    if (!token) {
-      console.error('JWT token not found in cookies');
-      return;
-    }
-
-    this.chatId = chatId;
     const url = `${this.socketBaseUrl}?chatId=${chatId}&token=${token}`;
+    this.disconnect();
+    
     this.socket = new WebSocket(url);
 
     this.socket.onopen = () => {
-      console.log('WebSocket connection opened');
+      this.reconnectAttempts = 0;
     };
 
     this.socket.onmessage = (event: MessageEvent) => {
       try {
-        const data = JSON.parse(event.data);
-        this.chatMessages$.next(data);
-      } catch (err) {
-        console.error('Failed to parse WebSocket message', err);
+        const parsedData = JSON.parse(event.data);
+        this.chatMessages$.next(parsedData);
+      } catch (error) {
+        console.error('Error parsing WebSocket message:', error);
       }
     };
 
-    this.socket.onerror = (event: Event) => {
-      console.error('WebSocket error', event);
+    this.socket.onerror = (error) => {
+      console.error('WebSocket error:', error);
     };
 
     this.socket.onclose = () => {
-      console.log('WebSocket connection closed');
-      this.socket = null;
+      if (this.reconnectAttempts < this.maxReconnectAttempts) {
+        this.reconnectAttempts++;
+        setTimeout(() => this.connect(chatId), this.reconnectDelay);
+      }
     };
   }
 
   sendMessage(content: string): void {
-    if (!this.socket || this.socket.readyState !== WebSocket.OPEN || !this.chatId) {
-      console.error('WebSocket not connected or chatId missing');
-      return;
-    }
-
-    const message = {
-      content,
-      timestamp: null
-    };
-
-    this.socket.send(JSON.stringify(message));
+    if (!this.socket || this.socket.readyState !== WebSocket.OPEN) return;
+    this.socket.send(JSON.stringify({ content }));
   }
 
   disconnect(): void {
@@ -69,6 +77,5 @@ export class WebsocketService {
       this.socket.close();
       this.socket = null;
     }
-    this.chatId = null;
   }
 }
