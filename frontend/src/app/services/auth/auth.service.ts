@@ -2,6 +2,7 @@ import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/c
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { CookieService } from 'ngx-cookie-service';
+import { jwtDecode } from 'jwt-decode';
 
 @Injectable({
   providedIn: 'root'
@@ -38,9 +39,9 @@ export class AuthService implements HttpInterceptor {
   }
 
   getToken(): string | null {
-  const token = this.cookieService.get('SecureJWT');
-  return token || null;
-}
+    const token = this.cookieService.get('SecureJWT');
+    return token || null;
+  }
 
   deleteToken() : void {
     this.cookieService.delete('SecureJWT');
@@ -48,5 +49,12 @@ export class AuthService implements HttpInterceptor {
 
   isTokenPresent() {
     return this.cookieService.check('SecureJWT') != null;
+  }
+
+  getUserEmail(): string {
+    const token = this.getToken();
+    if (!token) return '';
+    const decodedToken: any = jwtDecode(token);
+    return decodedToken.sub;
   }
 }
