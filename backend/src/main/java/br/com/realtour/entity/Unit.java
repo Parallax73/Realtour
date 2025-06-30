@@ -22,17 +22,15 @@ public class Unit {
     private String id;
     private String address;
     private String number;
-    private Float latitude;
-    private Float longitude;
+    private String neighbourhood;
+    private String city;
     private Float price;
     private Realtor realtor;
 
 
     public Unit(CreateUnitDTO dto){
         this.number = dto.number();
-        this.latitude = dto.latitude();
         this.price = dto.price();
-        this.longitude = dto.longitude();
     }
 
     public void changePrice(Float price){
