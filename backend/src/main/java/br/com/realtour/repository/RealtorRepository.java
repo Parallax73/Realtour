@@ -7,7 +7,7 @@ import reactor.core.publisher.Mono;
 
 @Repository
 public interface RealtorRepository extends ReactiveMongoRepository<Realtor, String> {
-    Mono<Boolean> existsByUsername(String username);
+    Mono<Boolean> existsByEmail(String email);
     Mono<Boolean> existsByCreci(String creci);
     Mono<Realtor> findByUsername(String username);
     Mono<Realtor> findByEmail(String email);
