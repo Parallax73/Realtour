@@ -80,4 +80,22 @@ public class ChatService {
         String email = jwtService.extractEmail(token);
         return chatRepository.findByClientEmailOrRealtorEmail(email, email);
     }
+
+    public Mono<Chat> getChat(String id, String token) {
+        String email = jwtService.extractEmail(token);
+        log.debug("Attempting to get chat {} for user {}", id, email);
+
+        return chatRepository.findById(id)
+                .switchIfEmpty(Mono.error(new RuntimeException("Chat not found")))
+                .flatMap(chat -> {
+                    log.debug("Found chat with clientEmail: {} and realtorEmail: {}",
+                            chat.getClientEmail(), chat.getRealtorEmail());
+
+                    if (email.equals(chat.getClientEmail()) || email.equals(chat.getRealtorEmail())) {
+                        return Mono.just(chat);
+                    }
+                    return Mono.error(new RuntimeException("You do not participate in the chat you are trying to see"));
+                });
+    }
+
 }

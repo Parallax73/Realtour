@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -48,6 +49,17 @@ public class ChatController {
                 .onErrorResume(e -> {
                     log.error("Failed to fetch chats: {}", e.getMessage(), e);
                     return Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
+                });
+    }
+
+    @GetMapping("get/{id}")
+    public Mono<ResponseEntity<Chat>> getChat(@CookieValue("SecureJWT") String token, @PathVariable("id") String id) {
+        return chatService.getChat(id, token)
+                .map(ResponseEntity::ok)
+                .onErrorResume(e -> {
+                    log.error("Error getting chat: {}", e.getMessage());
+                    return Mono.just(ResponseEntity.status(HttpStatus.FORBIDDEN)
+                            .build());
                 });
     }
 
