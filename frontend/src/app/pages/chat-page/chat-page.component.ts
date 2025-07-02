@@ -10,7 +10,7 @@ import { ButtonModule } from 'primeng/button';
 import { FileUploadModule } from 'primeng/fileupload';
 import { UnitService } from '@app/services/unit/unit.service';
 import { RouterService } from '@app/services/router/router.service';
-import { Unit } from '@app/models/unit';
+import { Unit } from '@app/utils/models/unit';
 import { DatePipe } from '@angular/common';
 
 @Component({

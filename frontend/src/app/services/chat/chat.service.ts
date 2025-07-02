@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
-import { Chat } from '@app/models/chat';
-import { Message } from '@app/models/message';
+import { Chat } from '@app/utils/models/chat';
+import { Message } from '@app/utils/models/message';
 
 
 @Injectable({
