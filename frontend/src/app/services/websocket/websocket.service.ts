@@ -1,81 +1,74 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { AuthService } from 'src/app/services/auth/auth.service';
-
-export interface Chat {
-  id: string;
-  clientEmail: string;
-  clientName: string;
-  realtorEmail: string;
-  realtorName: string;
-  unitId: string;
-  unitAddress: string | null;
-  unitNumber: string;
-  messages: Message[];
-}
-
-export interface Message {
-  sender: string;
-  content: string;
-  timestamp: string;
-}
+import { AuthService } from '../auth/auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class WebsocketService {
-  private socket: WebSocket | null = null;
-  private readonly socketBaseUrl = 'ws://localhost:8080/ws/chat';
-  public chatMessages$ = new BehaviorSubject<Chat | null>(null);
+  private ws: WebSocket | null = null;
   private reconnectAttempts = 0;
   private maxReconnectAttempts = 5;
-  private reconnectDelay = 3000;
+  private reconnectDelay = 2000; 
+  
+  public chatMessages$ = new BehaviorSubject<any>(null);
 
   constructor(private authService: AuthService) {}
 
-  connect(chatId: string): void {
+  connect(chatId: string) {
+    this.disconnect(); 
+    
     const token = this.authService.getToken();
     if (!token) return;
 
-    const url = `${this.socketBaseUrl}?chatId=${chatId}&token=${token}`;
-    this.disconnect();
-    
-    this.socket = new WebSocket(url);
+    try {
+      const wsUrl = `ws://localhost:8080/ws/chat?chatId=${chatId}&token=${token}`;
+      this.ws = new WebSocket(wsUrl);
 
-    this.socket.onopen = () => {
-      this.reconnectAttempts = 0;
-    };
+      this.ws.onopen = () => {
+        console.log('WebSocket Connected');
+        this.reconnectAttempts = 0; 
+      };
 
-    this.socket.onmessage = (event: MessageEvent) => {
-      try {
-        const parsedData = JSON.parse(event.data);
-        this.chatMessages$.next(parsedData);
-      } catch (error) {
-        console.error('Error parsing WebSocket message:', error);
-      }
-    };
+      this.ws.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        this.chatMessages$.next(data);
+      };
 
-    this.socket.onerror = (error) => {
-      console.error('WebSocket error:', error);
-    };
+      this.ws.onclose = () => {
+        console.log('WebSocket Disconnected');
+        this.handleReconnect(chatId);
+      };
 
-    this.socket.onclose = () => {
-      if (this.reconnectAttempts < this.maxReconnectAttempts) {
-        this.reconnectAttempts++;
-        setTimeout(() => this.connect(chatId), this.reconnectDelay);
-      }
-    };
+      this.ws.onerror = (error) => {
+        console.error('WebSocket error:', error);
+      };
+
+    } catch (error) {
+      console.error('Error establishing WebSocket connection:', error);
+    }
   }
 
-  sendMessage(content: string): void {
-    if (!this.socket || this.socket.readyState !== WebSocket.OPEN) return;
-    this.socket.send(JSON.stringify({ content }));
+  private handleReconnect(chatId: string) {
+    if (this.reconnectAttempts < this.maxReconnectAttempts) {
+      this.reconnectAttempts++;
+      console.log(`Attempting to reconnect... (${this.reconnectAttempts}/${this.maxReconnectAttempts})`);
+      setTimeout(() => this.connect(chatId), this.reconnectDelay);
+    }
   }
 
-  disconnect(): void {
-    if (this.socket) {
-      this.socket.close();
-      this.socket = null;
+  disconnect() {
+    if (this.ws) {
+      this.ws.close();
+      this.ws = null;
+    }
+  }
+
+  sendMessage(message: string) {
+    if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+      this.ws.send(JSON.stringify({ content: message }));
+    } else {
+      console.error('WebSocket is not connected');
     }
   }
 }
