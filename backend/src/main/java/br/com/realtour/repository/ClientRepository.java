@@ -7,7 +7,7 @@ import reactor.core.publisher.Mono;
 
 @Repository
 public interface ClientRepository extends ReactiveMongoRepository<Client, String> {
-    Mono<Boolean> existsByUsername(String username);
+    Mono<Boolean> existsByEmail(String email);
     Mono<Client> findByUsername(String username);
     Mono<Client> findByEmail(String email);
 }
