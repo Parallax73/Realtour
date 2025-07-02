@@ -40,4 +40,12 @@ export class RouterService {
   navigateToChat():void{
     this.router.navigate(['chat'])
   }
+
+  navigateToRealtor(id: string):void{
+    this.router.navigate(['/realtor/'+id])
+  }
+
+  navigateToUnit(id: string):void{
+    this.router.navigate(['/unit/'+id])
+  }
 }
