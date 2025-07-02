@@ -50,18 +50,6 @@ export class MenuNavbarComponent implements OnInit {
   }
 
   ngOnInit() {
-    if (isPlatformBrowser(this.platformId)) {
-      const savedTheme = localStorage.getItem('theme');
-      if (savedTheme) {
-        this.isDarkMode = savedTheme === 'dark';
-        this.updateThemeClass(this.isDarkMode);
-      } else {
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        this.isDarkMode = prefersDark;
-        this.updateThemeClass(this.isDarkMode);
-      }
-    }
-
     this.useritems = [
       {
         label: 'Login',
