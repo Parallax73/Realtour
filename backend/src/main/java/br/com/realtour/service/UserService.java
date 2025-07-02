@@ -32,10 +32,10 @@ public class UserService {
     private PasswordEncoder encoder;
 
     public Mono<Client> createClient(RegisterClientDTO dto) {
-        return clientRepository.existsByUsername(dto.username())
+        return clientRepository.existsByEmail(dto.email())
                 .flatMap(exists -> {
                     if (exists) {
-                        return Mono.error(new IllegalArgumentException("Username already exists"));
+                        return Mono.error(new IllegalArgumentException("Email already registered"));
                     }
                     Client client = new Client(dto);
                     client.setPassword(encoder.encode(dto.password()));
@@ -47,10 +47,10 @@ public class UserService {
         return Mono.just(dto)
                 .filterWhen(d -> validateCreci(d.creci()))
                 .switchIfEmpty(Mono.error(new IllegalArgumentException("Invalid CRECI")))
-                .flatMap(d -> realtorRepository.existsByUsername(d.username())
+                .flatMap(d -> realtorRepository.existsByEmail(d.email())
                         .flatMap(exists -> {
                             if (exists) {
-                                return Mono.error(new UsernameAlreadyExistsException("Username already exists"));
+                                return Mono.error(new UsernameAlreadyExistsException("Email already registered"));
                             }
                             return realtorRepository.existsByCreci(d.creci());
                         })
