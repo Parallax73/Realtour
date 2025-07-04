@@ -1,0 +1,68 @@
+{
+  "MENU": {
+    "HOME": "Início",
+    "UNITS": "Unidades",
+    "REALTORS": "Corretores",
+    "ALL_PAGES": "Todas as páginas",
+    "CHAT": "Chat",
+    "MAP": "Mapa",
+    "CONTACT_US": "Contato"
+  },
+  "USER": {
+    "LOGIN": "Entrar",
+    "REGISTER": "Cadastrar",
+    "LOGOUT": "Sair"
+  },
+  "BRAND": {
+    "REAL": "Real",
+    "TOUR": "Tour"
+  },
+  "HOME_PAGE": {
+    "TITLE": "Impulsione sua busca pelo seu",
+    "TITLE_LINEBREAK": "próprio lar",
+    "SUBTITLE": "Experimente procurar imóveis como nunca antes",
+    "GET_STARTED": "Começar",
+    "LEARN_MORE": "Saiba Mais"
+  },
+  "LOGIN_PAGE": {
+    "CREATE_ACCOUNT": "Crie uma conta",
+    "ENTER_EMAIL_SIGNUP": "Digite seu Email para cadastrar-se no app",
+    "EMAIL": "Email",
+    "EMAIL_INVALID": "O email é inválido",
+    "USERNAME": "Nome de usuário",
+    "PASSWORD": "Senha",
+    "SELECT_OPTION": "Selecione uma opção",
+    "SIGNUP_BTN": "Cadastrar com email",
+    "CREATE_ACCOUNT_BTN": "Criar Conta",
+    "TERMS": "Ao clicar em continuar, você concorda com nossos",
+    "TERMS_LINK": "Termos de Serviço",
+    "PRIVACY_LINK": "Política de Privacidade",
+    "REALTOR_SECTION": "Seção de Corretor",
+    "SELECT_STATE": "Selecione o estado",
+    "ENTER_CRECI": "Digite seu CRECI",
+    "PLEASE_FILL": "Por favor, preencha todos os campos obrigatórios",
+    "USERNAME_PASSWORD_MIN": "Nome de usuário e senha devem ter ao menos 4 caracteres",
+    "SELECT_STATE_AND_CRECI": "Por favor, selecione um estado e digite o número CRECI",
+    "CRECI_LENGTH": "O número CRECI deve ter exatamente 6 dígitos",
+    "CRECI_NUMERIC": "O número CRECI deve conter apenas dígitos",
+    "VALID_EMAIL": "Por favor, insira um email válido",
+    "INVALID_LOGIN": "Credenciais de login inválidas.",
+    "REGISTER": "Cadastrar",
+    "LOGIN": "Entrar",
+    "LOG_IN": "Entrar"
+  },
+  "UNIT_PAGE": {
+    "TYPE": "Tipo",
+    "APARTMENT": "Apartamento",
+    "HOUSE": "Casa",
+    "ROOMS": "Quartos",
+    "BATHROOMS": "Banheiros",
+    "AMENITIES": "Comodidades",
+    "RESET_FILTERS": "Limpar filtros",
+    "FILTER": "Filtrar",
+    "GYM": "Academia",
+    "GARAGE": "Garagem",
+    "POOL": "Piscina",
+    "ELEVATOR": "Elevador"
+  }
+}

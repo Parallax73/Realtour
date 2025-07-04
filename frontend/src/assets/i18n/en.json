@@ -1,0 +1,68 @@
+{
+  "MENU": {
+    "HOME": "Home",
+    "UNITS": "Units",
+    "REALTORS": "Realtors",
+    "ALL_PAGES": "All pages",
+    "CHAT": "Chat",
+    "MAP": "Map",
+    "CONTACT_US": "Contact Us"
+  },
+  "USER": {
+    "LOGIN": "Login",
+    "REGISTER": "Register",
+    "LOGOUT": "Logout"
+  },
+  "BRAND": {
+    "REAL": "Real",
+    "TOUR": "Tour"
+  },
+  "HOME_PAGE": {
+    "TITLE": "Power your search for your",
+    "TITLE_LINEBREAK": "own place",
+    "SUBTITLE": "Experience house hunting like never before",
+    "GET_STARTED": "Get Started",
+    "LEARN_MORE": "Learn More"
+  },
+  "LOGIN_PAGE": {
+    "CREATE_ACCOUNT": "Create an account",
+    "ENTER_EMAIL_SIGNUP": "Enter your Email to sign up for this app",
+    "EMAIL": "Email",
+    "EMAIL_INVALID": "The email is invalid",
+    "USERNAME": "Username",
+    "PASSWORD": "Password",
+    "SELECT_OPTION": "Select an option",
+    "SIGNUP_BTN": "Sign up with email",
+    "CREATE_ACCOUNT_BTN": "Create Account",
+    "TERMS": "By clicking continue, you agree to our",
+    "TERMS_LINK": "Terms of Service",
+    "PRIVACY_LINK": "Privacy Policy",
+    "REALTOR_SECTION": "Realtor Section",
+    "SELECT_STATE": "Select state",
+    "ENTER_CRECI": "Enter your creci",
+    "PLEASE_FILL": "Please fill in all required fields",
+    "USERNAME_PASSWORD_MIN": "Username and password must be at least 4 characters",
+    "SELECT_STATE_AND_CRECI": "Please select a state and enter CRECI number",
+    "CRECI_LENGTH": "CRECI number must be exactly 6 digits",
+    "CRECI_NUMERIC": "CRECI number must contain only digits",
+    "VALID_EMAIL": "Please enter a valid email",
+    "INVALID_LOGIN": "Invalid login credentials.",
+    "REGISTER": "Register",
+    "LOGIN": "Login",
+    "LOG_IN": "Log in"
+  },
+  "UNIT_PAGE": {
+    "TYPE": "Type",
+    "APARTMENT": "Apartment",
+    "HOUSE": "House",
+    "ROOMS": "Rooms",
+    "BATHROOMS": "Bathrooms",
+    "AMENITIES": "Amenities",
+    "RESET_FILTERS": "Reset filters",
+    "FILTER": "Filter",
+    "GYM": "Gym",
+    "GARAGE": "Garage",
+    "POOL": "Pool",
+    "ELEVATOR": "Elevator"
+  }
+}
