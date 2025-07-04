@@ -13,6 +13,7 @@ import { Client } from '../../utils/models/client';
 import { Realtor } from '../../utils/models/realtor';
 import { RouterService } from '../../services/router/router.service';
 import { AuthService } from '../../services/auth/auth.service';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-login-page',
@@ -25,7 +26,8 @@ import { AuthService } from '../../services/auth/auth.service';
     MenuNavbarComponent,
     SelectModule,
     InputGroupAddonModule,
-    InputGroupModule
+    InputGroupModule,
+    TranslateModule
   ],
   templateUrl: './login-page.component.html',
   styleUrl: './login-page.component.scss',
@@ -47,7 +49,10 @@ export class LoginPageComponent {
   selectedState: States | null = null;
   errorMessage: string = '';
  
-  constructor(private userService: UserService, private router: RouterService) {}
+  constructor(
+    private userService: UserService,
+    private router: RouterService,
+    private translate: TranslateService) {}
 
   stateOptions: any[] = [
     { label: 'Register' },
@@ -158,7 +163,7 @@ export class LoginPageComponent {
           }
         },
         error: () => {
-          alert('Invalid login credentials.');
+          alert(this.translate.instant('LOGIN_PAGE.INVALID_LOGIN'));
         }
       });
     }
@@ -214,7 +219,4 @@ export class LoginPageComponent {
       }
     });
   }
-
- 
-
 }

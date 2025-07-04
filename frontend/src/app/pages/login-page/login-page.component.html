@@ -11,35 +11,35 @@
     </p-selectButton>
   </div>
 
-  @if (optionToggle) {
+  <ng-container *ngIf="optionToggle">
     <div class="register-div">
-      <h4>Create an account</h4>
-      <h5>Enter your Email to sign up for this app</h5>
+      <h4>{{ 'LOGIN_PAGE.CREATE_ACCOUNT' | translate }}</h4>
+      <h5>{{ 'LOGIN_PAGE.ENTER_EMAIL_SIGNUP' | translate }}</h5>
       <div class="email-container mb-3">
         <input 
-          placeholder="Email" 
+          placeholder="{{ 'LOGIN_PAGE.EMAIL' | translate }}" 
           class="input" 
           type="email" 
           [(ngModel)]="email"
           [ngClass]="{'invalid': !isEmailValid && isSubmitted}"
           required
         >
-        @if (!isEmailValid && isSubmitted) {
-          <div class="error-message">The email is invalid</div>
-        }
+        <div *ngIf="!isEmailValid && isSubmitted" class="error-message">
+          {{ 'LOGIN_PAGE.EMAIL_INVALID' | translate }}
+        </div>
       </div>
 
-      @if (showPasswordFields) {
+      <ng-container *ngIf="showPasswordFields">
         <div class="password-container">
           <input 
-            placeholder="Username" 
+            placeholder="{{ 'LOGIN_PAGE.USERNAME' | translate }}" 
             class="input mb-3" 
             type="text" 
             [(ngModel)]="username"
             required
           >
           <input 
-            placeholder="Password" 
+            placeholder="{{ 'LOGIN_PAGE.PASSWORD' | translate }}" 
             class="input mb-3" 
             type="password" 
             [(ngModel)]="password"
@@ -50,67 +50,68 @@
             [options]="classOptions" 
             (onChange)="changeClass()" 
             [(ngModel)]="selectedClass" 
-            placeholder="Select an option">
+            placeholder="{{ 'LOGIN_PAGE.SELECT_OPTION' | translate }}">
           </p-select>
 
-           <h6 style="color: red;">{{ errorMessage }}</h6>
+          <h6 style="color: red;">{{ errorMessage }}</h6>
 
-          @if (isRealtor) {
-          <div class="realtor-section mb-3">
-            <p-inputGroup>
-              <p-select 
-                size="small"  
-                [options]="states" 
-                [virtualScroll]="true" 
-                virtualScrollItemSize="28"
-                [(ngModel)]="selectedState"
-                placeholder="Select state">
-              </p-select>
-              <input 
-                type="text" 
-                pInputText 
-                placeholder="Enter your creci"
-                [(ngModel)]="creci"
-                maxlength="6"
-                minlength="6"
-                required>
-            </p-inputGroup>
-  </div>
-}
+          <ng-container *ngIf="isRealtor">
+            <div class="realtor-section mb-3">
+              <p-inputGroup>
+                <p-select 
+                  size="small"  
+                  [options]="states" 
+                  [virtualScroll]="true" 
+                  virtualScrollItemSize="28"
+                  [(ngModel)]="selectedState"
+                  placeholder="{{ 'LOGIN_PAGE.SELECT_STATE' | translate }}">
+                </p-select>
+                <input 
+                  type="text" 
+                  pInputText 
+                  placeholder="{{ 'LOGIN_PAGE.ENTER_CRECI' | translate }}"
+                  [(ngModel)]="creci"
+                  maxlength="6"
+                  minlength="6"
+                  required>
+              </p-inputGroup>
+            </div>
+          </ng-container>
         </div>
-      }
+      </ng-container>
 
       <p-button 
-        [label]="showPasswordFields ? 'Create Account' : 'Sign up with email'" 
+        [label]="showPasswordFields ? ('LOGIN_PAGE.CREATE_ACCOUNT_BTN' | translate) : ('LOGIN_PAGE.SIGNUP_BTN' | translate)" 
         class="signup-btn"
         (onClick)="onSignupClick()"
       ></p-button>
       <h6>
-        By clicking continue, you agree to our 
-        <span class="link">Terms of Service</span> and 
-        <span class="link">Privacy Policy</span>
+        {{ 'LOGIN_PAGE.TERMS' | translate }} 
+        <span class="link">{{ 'LOGIN_PAGE.TERMS_LINK' | translate }}</span> 
+        {{ 'LOGIN_PAGE.TERMS' | translate }} 
+        <span class="link">{{ 'LOGIN_PAGE.PRIVACY_LINK' | translate }}</span>
       </h6>
     </div>
-  }
+  </ng-container>
 
-  @if (!optionToggle) {
+  <ng-container *ngIf="!optionToggle">
     <div class="login-div">
-      <h4>Welcome back</h4>
+      <h4>{{ 'LOGIN_PAGE.LOGIN' | translate }}</h4>
       <h5>Login to your account</h5>
       <div class="input-container">
         <input 
-          placeholder="Email" 
+          placeholder="{{ 'LOGIN_PAGE.EMAIL' | translate }}" 
           class="input" 
           type="email" 
           [(ngModel)]="email"
           [ngClass]="{'invalid': !isEmailValid && isSubmitted}"
           required
         >
-        @if (!isEmailValid && isSubmitted) {
-          <div class="error-message">The email is invalid</div>
-        }
+        <div *ngIf="!isEmailValid && isSubmitted" class="error-message">
+          {{ 'LOGIN_PAGE.EMAIL_INVALID' | translate }}
+        </div>
         <input 
-          placeholder="Password" 
+          placeholder="{{ 'LOGIN_PAGE.PASSWORD' | translate }}" 
           class="input" 
           type="password" 
           [(ngModel)]="password"
@@ -119,10 +120,10 @@
       </div>
 
       <p-button 
-        label="Log in" 
+        [label]="'LOGIN_PAGE.LOG_IN' | translate" 
         class="login-btn"
         (onClick)="onLoginClick()"
       ></p-button>
     </div>
-  }
+  </ng-container>
 </div>

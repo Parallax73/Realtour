@@ -2,28 +2,31 @@
 <div class="container">
   <div class="select-div">
     <div class="search-wrapper">
-      <input placeholder="Search chats"/>
+      <input [placeholder]="'CHAT_PAGE.SEARCH_PLACEHOLDER' | translate" />
       <i class="pi pi-search"></i>
     </div>
 
     @for (chat of chats; track chat.id) {
-    <div class="chat-div" (click)="handleChatSelection(chat)">
-      <div class="chat-content">
-        <h4>{{ chat.unitAddress }}, {{ chat.unitNumber }}</h4>
-        <h6>{{ getLastMessage(chat) }}</h6>
+      <div class="chat-div" (click)="handleChatSelection(chat)">
+        <div class="chat-content">
+          <h4>{{ chat.unitAddress }}, {{ chat.unitNumber }}</h4>
+          <h6>{{ getLastMessage(chat) }}</h6>
+        </div>
+        <div class="timestamp">
+          <small>{{ chat.lastMessageTime | date: 'yyyy-MM-dd HH:mm:ss' }}</small>
+        </div>
       </div>
-      <div class="timestamp">
-        <small>{{ chat.lastMessageTime | date:'yyyy-MM-dd HH:mm:ss' }}</small>
-      </div>
-    </div>
     }
   </div>
 
   @if (!chatIsSelected) {
     <div class="not-selected">
-      <h2>Select a chat</h2>
-      <h5>Choose from your existing conversation or search for a unit</h5>
-      <p-button label="Search Unit" (onClick)="this.routerService.navigateToUnits()"></p-button>
+      <h2>{{ 'CHAT_PAGE.SELECT_CHAT' | translate }}</h2>
+      <h5>{{ 'CHAT_PAGE.CHOOSE_EXISTING' | translate }}</h5>
+      <p-button
+        [label]="'CHAT_PAGE.SEARCH_UNIT' | translate"
+        (onClick)="this.routerService.navigateToUnits()">
+      </p-button>
     </div>
   }
 
@@ -31,16 +34,16 @@
     <div class="mid-div">
       <div class="top-bar">
         <h4>{{ selectedUnit?.address }}, {{ selectedUnit?.number }}</h4>
-        <a href="localhost:8080">See on the map</a>
+        <a href="localhost:8080">{{ 'CHAT_PAGE.SEE_ON_MAP' | translate }}</a>
       </div>
 
       <div #messageContainer class="chat-messages">
         @if (messages.length === 0) {
           <div class="no-messages">
-            <p>No messages yet. Start the conversation!</p>
+            <p>{{ 'CHAT_PAGE.NO_MESSAGES' | translate }}</p>
           </div>
         }
-        
+
         @for (msg of messages; track $index) {
           <div class="message">
             <div [class]="isCurrentUserMessage(msg) ? 'message-sent' : 'message-received'">
@@ -48,7 +51,7 @@
                 <strong>{{ getMessageSenderName(msg) }}:</strong>
                 {{ msg.content }}
               </p>
-              <small>{{ msg.timestamp | date:'yyyy-MM-dd HH:mm:ss' }}</small>
+              <small>{{ msg.timestamp | date: 'yyyy-MM-dd HH:mm:ss' }}</small>
             </div>
           </div>
         }
@@ -56,10 +59,11 @@
 
       <div class="chat-input-container">
         <div class="input-wrapper">
-          <input type="text"
-                 [(ngModel)]="messageText"
-                 (keydown.enter)="sendMessage()"
-                 placeholder="Type your message..."/>
+          <input
+            type="text"
+            [(ngModel)]="messageText"
+            (keydown.enter)="sendMessage()"
+            [placeholder]="'CHAT_PAGE.TYPE_PLACEHOLDER' | translate" />
           <div class="button-group">
             <p-button icon="pi pi-reply" (onClick)="sendMessage()"></p-button>
             <p-button icon="pi pi-images"></p-button>
@@ -71,8 +75,15 @@
     <div class="right-div">
       <img class="realtor-picture" src="assets/images/defaultProfile.png" alt="Profile Picture" />
       <h4>{{ selectedChat?.realtorName }}</h4>
-      <p-button (onClick)="navigateToRealtorProfile()" label="View Profile"></p-button>
-      <p-button (onClick)="navigateToUnitPage()" label="See unit page" severity="secondary"></p-button>
+      <p-button
+        (onClick)="navigateToRealtorProfile()"
+        [label]="'CHAT_PAGE.VIEW_PROFILE' | translate">
+      </p-button>
+      <p-button
+        (onClick)="navigateToUnitPage()"
+        [label]="'CHAT_PAGE.SEE_UNIT_PAGE' | translate"
+        severity="secondary">
+      </p-button>
     </div>
   }
 </div>

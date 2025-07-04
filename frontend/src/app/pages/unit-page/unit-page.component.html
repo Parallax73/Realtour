@@ -1,1 +1,76 @@
-<app-side-bar></app-side-bar>
+<app-menu-navbar></app-menu-navbar>
+
+<div class="container">
+  <div class="filter-option">
+    <div class="type-select">
+      <span>{{ 'UNIT_PAGE.TYPE' | translate }}</span>
+      <div class="checkbox-item">
+        <p-checkbox [(ngModel)]="apartment" inputId="apartament" name="size" value="Small"></p-checkbox>
+        <label for="apartament" class="text-sm">{{ 'UNIT_PAGE.APARTMENT' | translate }}</label>
+      </div>
+      <div class="checkbox-item">
+        <p-checkbox [(ngModel)]="house" inputId="house" name="size" value="Small"></p-checkbox>
+        <label for="house" class="text-sm">{{ 'UNIT_PAGE.HOUSE' | translate }}</label>
+      </div>
+    </div>
+
+    <span>{{ 'UNIT_PAGE.ROOMS' | translate }}</span>
+    <div class="checkbox-group group1">
+      <ng-container *ngFor="let checkbox of group1; let i = index">
+        <div class="checkbox-item">
+          <p-checkbox
+            [binary]="true"
+            [ngModel]="isSelected(1, i)"
+            (onChange)="onCheckboxChange(1, i)"
+            [inputId]="'g1-' + checkbox.id"
+            size="small">
+          </p-checkbox>
+          <label [for]="'g1-' + checkbox.id" class="text-sm">{{ checkbox.label }}</label>
+        </div>
+      </ng-container>
+    </div>
+
+    <span>{{ 'UNIT_PAGE.BATHROOMS' | translate }}</span>
+    <div class="checkbox-group group2">
+      <ng-container *ngFor="let checkbox of group2; let i = index">
+        <div class="checkbox-item">
+          <p-checkbox
+            [binary]="true"
+            [ngModel]="isSelected(2, i)"
+            (onChange)="onCheckboxChange(2, i)"
+            [inputId]="'g2-' + checkbox.id"
+            size="small">
+          </p-checkbox>
+          <label [for]="'g2-' + checkbox.id" class="text-sm">{{ checkbox.label }}</label>
+        </div>
+      </ng-container>
+    </div>
+
+    <span>{{ 'UNIT_PAGE.AMENITIES' | translate }}</span>
+    <div class="flex flex-col gap-4">
+      <div *ngFor="let category of categories" class="flex items-center">
+        <p-checkbox [inputId]="category.key" name="group" [value]="category" [(ngModel)]="selectedCategories"></p-checkbox>
+        <label [for]="category.key" class="ml-2">{{ 'UNIT_PAGE.' + category.name.toUpperCase() | translate }}</label>
+      </div>
+    </div>
+
+    <div class="button-group">
+      <p-button
+        [rounded]="true"
+        [label]="'UNIT_PAGE.RESET_FILTERS' | translate"
+        severity="contrast"
+        size="small"
+        (onClick)="resetFilters()">
+      </p-button>
+      <p-button [rounded]="true" [label]="'UNIT_PAGE.FILTER' | translate" size="small"></p-button>
+    </div>
+  </div>
+
+  <div class="unit-div">
+    asddasdas
+  </div>
+
+  <div class="map-div">
+    <!-- Map content goes here -->
+  </div>
+</div>

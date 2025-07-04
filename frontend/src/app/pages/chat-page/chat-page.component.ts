@@ -1,9 +1,9 @@
-import { Component, OnDestroy, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, ElementRef, inject } from '@angular/core';
 import { WebsocketService } from 'src/app/services/websocket/websocket.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { Subscription } from 'rxjs';
 import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { ChatService } from '@app/services/chat/chat.service';
 import { MenuNavbarComponent } from "../../components/menu-navbar/menu-navbar.component";
 import { ButtonModule } from 'primeng/button';
@@ -11,7 +11,9 @@ import { FileUploadModule } from 'primeng/fileupload';
 import { UnitService } from '@app/services/unit/unit.service';
 import { RouterService } from '@app/services/router/router.service';
 import { Unit } from '@app/utils/models/unit';
-import { DatePipe } from '@angular/common';
+import { TranslateService } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
+
 
 @Component({
   selector: 'app-chat-page',
@@ -23,13 +25,14 @@ import { DatePipe } from '@angular/common';
     CommonModule,
     ButtonModule,
     FileUploadModule,
-    MenuNavbarComponent
+    MenuNavbarComponent,
+    TranslateModule
   ],
   providers: [DatePipe]
 })
 export class ChatPageComponent implements OnInit, OnDestroy {
   @ViewChild('messageContainer') private messageContainer!: ElementRef;
-  
+
   public chats: any[] = [];
   public selectedChat: any = null;
   public selectedUnit: Unit | null = null;
@@ -38,6 +41,7 @@ export class ChatPageComponent implements OnInit, OnDestroy {
   private messageSub!: Subscription;
   public currentUser: any;
   chatIsSelected = false;
+  private translate = inject(TranslateService);
 
   constructor(
     public websocketService: WebsocketService,
@@ -51,7 +55,7 @@ export class ChatPageComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     const token = this.authService.getToken();
     if (!token) return;
-    
+
     this.chatService.getChatList().subscribe({
       next: (chats: any) => {
         this.chats = chats;
@@ -86,39 +90,39 @@ export class ChatPageComponent implements OnInit, OnDestroy {
   }
 
   handleChatSelection(chat: any): void {
-  if (!chat || !chat.id) return;
+    if (!chat || !chat.id) return;
 
-  this.chatIsSelected = true;
-  
-  if (this.selectedChat && this.selectedChat.id !== chat.id) {
-    this.websocketService.disconnect();
-  }
-  
-  this.unitService.getUnitById(chat.unitId).subscribe({
-    next: (unit) => {
-      this.selectedChat = chat;
-      this.selectedUnit = {
-        ...unit,
-        address: unit.address || chat.unitAddress, 
-        number: unit.number || chat.unitNumber 
-      };
-      this.messages = chat.messages || [];
-      
-      if (!this.messageSub || this.selectedChat.id !== chat.id) {
-        this.connectWebSocket(chat.id);
-      }
-    },
-    error: (error) => {
-      this.chatIsSelected = false;
+    this.chatIsSelected = true;
+
+    if (this.selectedChat && this.selectedChat.id !== chat.id) {
+      this.websocketService.disconnect();
     }
-  });
-}
+
+    this.unitService.getUnitById(chat.unitId).subscribe({
+      next: (unit) => {
+        this.selectedChat = chat;
+        this.selectedUnit = {
+          ...unit,
+          address: unit.address || chat.unitAddress,
+          number: unit.number || chat.unitNumber
+        };
+        this.messages = chat.messages || [];
+
+        if (!this.messageSub || this.selectedChat.id !== chat.id) {
+          this.connectWebSocket(chat.id);
+        }
+      },
+      error: () => {
+        this.chatIsSelected = false;
+      }
+    });
+  }
 
   private connectWebSocket(chatId: string) {
     if (this.messageSub) {
       this.messageSub.unsubscribe();
     }
-    
+
     this.websocketService.connect(chatId);
     this.messageSub = this.websocketService.chatMessages$.subscribe({
       next: (updatedChat) => {
@@ -127,7 +131,7 @@ export class ChatPageComponent implements OnInit, OnDestroy {
           this.scrollToBottom();
         }
       },
-      error: (error) => {}
+      error: () => {}
     });
   }
 
@@ -137,21 +141,21 @@ export class ChatPageComponent implements OnInit, OnDestroy {
 
   getMessageSenderName(msg: any): string {
     if (this.isCurrentUserMessage(msg)) {
-      return 'You';
+      return this.translate.instant('CHAT_PAGE.YOU');
     }
-    return msg.sender === this.selectedChat.clientEmail ? 
-      this.selectedChat.clientName : 
+    return msg.sender === this.selectedChat.clientEmail ?
+      this.selectedChat.clientName :
       this.selectedChat.realtorName;
   }
 
   getLastMessage(chat: any): string {
     if (chat.messages && chat.messages.length > 0) {
       const lastMessage = chat.messages[chat.messages.length - 1];
-      const sender = lastMessage.sender === this.currentUser?.email ? 'You' : 
+      const sender = lastMessage.sender === this.currentUser?.email ? this.translate.instant('CHAT_PAGE.YOU') :
         (lastMessage.sender === chat.clientEmail ? chat.clientName : chat.realtorName);
       return `${sender}: ${lastMessage.content}`;
     }
-    return 'No messages yet';
+    return this.translate.instant('CHAT_PAGE.NO_MESSAGES');
   }
 
   navigateToRealtorProfile(): void {
@@ -184,7 +188,7 @@ export class ChatPageComponent implements OnInit, OnDestroy {
       this.websocketService.disconnect();
     }
   }
-  
+
   choose(event: any, callback: () => void) {
     callback();
   }

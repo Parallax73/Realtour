@@ -2,6 +2,7 @@ import { Component, inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
+import { TranslateService } from '@ngx-translate/core';
 
 
 @Component({
@@ -15,6 +16,8 @@ export class AppComponent implements OnInit{
   
   isDarkMode = false;
   private readonly platformId = inject(PLATFORM_ID);
+  translate = inject(TranslateService);
+
 
   private updateThemeClass(isDark: boolean): void {
     if (isPlatformBrowser(this.platformId)) {
@@ -30,6 +33,9 @@ export class AppComponent implements OnInit{
   }
 
   ngOnInit() {
+    const lang = localStorage.getItem('lang') || 'en';
+    this.translate.setDefaultLang('en');
+    this.translate.use(lang);
     if (isPlatformBrowser(this.platformId)) {
       const savedTheme = localStorage.getItem('theme');
       if (savedTheme) {

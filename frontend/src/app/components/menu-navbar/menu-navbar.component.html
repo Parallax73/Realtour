@@ -1,6 +1,6 @@
 <div class="container">
   <div class="icon">
-    <h2>Real<span class="highlight-text">Tour</span></h2>
+    <h2>{{ 'BRAND.REAL' | translate }}<span class="highlight-text">{{ 'BRAND.TOUR' | translate }}</span></h2>
     <i class="pi pi-home highlight-text"></i>
   </div>
 
@@ -9,14 +9,18 @@
   </div>
 
   <div class="buttons-row">
-    <p-button [icon]="'pi pi-language'"></p-button>
+    <p-button 
+      [icon]="'pi pi-language'" 
+      (onClick)="switchLanguage()" 
+      [pTooltip]="currentLang === 'en' ? 'Switch to Portuguese' : 'Mudar para Inglês'">
+    </p-button>
     <p-button icon="pi pi-user" (onClick)="toggleUser()"></p-button>
     <p-button 
       (onClick)="toggleDarkMode()"
       [icon]="isDarkMode ? 'pi pi-sun' : 'pi pi-moon'">
     </p-button>
     <p-popover #popover>
-      <p-button class="logout-button" type="button" (onClick)="logout()" label="Logout"></p-button>
+      <p-button class="logout-button" type="button" (onClick)="logout()" [label]="'USER.LOGOUT' | translate"></p-button>
     </p-popover>
   </div>
 </div>

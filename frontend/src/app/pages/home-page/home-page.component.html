@@ -2,12 +2,27 @@
 <div class="container">
   <div class="center-text">
     <h1>
-      Power your search for your <br> own place
+      {{ 'HOME_PAGE.TITLE' | translate }}<br>{{ 'HOME_PAGE.TITLE_LINEBREAK' | translate }}
     </h1>
-    <h3>Experience house hunting like never before</h3>
+    <h3>{{ 'HOME_PAGE.SUBTITLE' | translate }}</h3>
     <div class="button-div">
-      <p-button  (onClick)="this.routerService.navigateToLogin()" label="Get Started" [rounded]="true" size="large" [icon]="'pi pi-arrow-right'" iconPos="right"></p-button>
-      <p-button (onClick)="this.routerService.navigateToContact()" label="Learn More" [rounded]="true" severity="contrast" size="large" [icon]="'pi pi-arrow-up-right'" iconPos="right"></p-button>
+      <p-button
+        (onClick)="this.routerService.navigateToLogin()"
+        [label]="'HOME_PAGE.GET_STARTED' | translate"
+        [rounded]="true"
+        size="large"
+        [icon]="'pi pi-arrow-right'"
+        iconPos="right">
+      </p-button>
+      <p-button
+        (onClick)="this.routerService.navigateToContact()"
+        [label]="'HOME_PAGE.LEARN_MORE' | translate"
+        [rounded]="true"
+        severity="contrast"
+        size="large"
+        [icon]="'pi pi-arrow-up-right'"
+        iconPos="right">
+      </p-button>
     </div>
 
     <div class="carousel-wrapper">
