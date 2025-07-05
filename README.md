@@ -1,4 +1,5 @@
 # Realtour
 
-
-<a><img width="100%" src="[https://l4wlsi8vxy8hre4v.public.blob.vercel-storage.com/github-banner-new-logo.jpg](https://ibb.co/MTHNsvn)" alt="Realtour" /></a>
+<div align="center">
+  <img src="https://i.ibb.co/QBVmfg9/screenshot.png" alt="Power your house hunting with 3D model view" width="100%">
+</div>
